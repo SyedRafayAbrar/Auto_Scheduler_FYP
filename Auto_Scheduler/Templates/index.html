@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+
+<!--<script>alert("Some Message.")</script>-->
+
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">Dashboard</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Dashboard v1</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3>{{lectureCount}}</h3>
+
+                <p>Teachers</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-person"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+              <div class="inner">
+                <h3>{{roomCount}}</h3>
+
+                <p>Rooms</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-chair"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-warning">
+              <div class="inner">
+                <h3>{{courseCount}}</h3>
+
+                <p>Courses</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-ios-book"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-danger">
+              <div class="inner">
+                <h3>{{timeSlots}}</h3>
+
+                <p>Time slots</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-clock"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+        </div>
+        <!-- /.row -->
+        <br>
+        <br>
+
+          <div class="container-fluid">
+
+          <button type="button" class="btn btn-block bg-gradient-info btn-lg">Create Table</button>
+
+          </div>
+
+        <br>
+        <div class="card-body table-responsive p-0">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Course name</th>
+                      <th>Course Code</th>
+                      <th>Course Capacity</th>
+                      <th>Professor Assigned</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for course in data %}
+                    <tr>
+                      <td>{{course.course_id}}</td>
+                      <td>{{course.course_name}}</td>
+                      <td>{{course.course_code}}</td>
+                      <td>{{course.course_capacity}}</td>
+                      <td>{{course.professors}}</td>
+                      <td>
+                        <form method="post" action="ViewsCollection/deleteCourse" >
+                          {% csrf_token %}
+                          <input type="hidden" class="form-control" placeholder="" name="delete_btn" value="{{course.Course_id}}">
+                          <button type="submit" class="btn btn-danger" name="">Delete</button>
+                        </form>
+
+                      </td>
+
+                    </tr>
+                  {%endfor%}
+
+                  </tbody>
+                </table>
+              </div>
+        <!-- /.row (main row) -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  <footer class="main-footer">
+    <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong>
+    All rights reserved.
+    <div class="float-right d-none d-sm-inline-block">
+      <b>Version</b> 3.0.2-pre
+    </div>
+  </footer>
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+
+{% endblock %}

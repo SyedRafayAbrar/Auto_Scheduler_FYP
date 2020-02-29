@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Add a Course</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">General Form</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <!-- left column -->
+          <div class="col-md-6">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Quick Example</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form role="form" method="POST" action="/addCourse">
+                {% csrf_token %}
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Course Code</label>
+                    <input type="text" name = "course_code" class="form-control" placeholder="Enter course code">
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Course Name</label>
+                    <input type="text" name = "course_name" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Capacity</label>
+                    <input type="text" class="form-control" id="" placeholder="Capacity" name="course_capacity">
+                  </div>
+
+                </div>
+
+
+                <!-- /.card-body -->
+               <div class="col-md-6">
+                <div class="form-group">
+                  <label>Professors</label>
+                  <select class="select2" multiple="multiple" data-placeholder="Select a Professors" style="width: 100%;" name="select_prof">
+                    {%for prof in professors%}
+                    <option name="options">{{prof.professor_name}}</option>
+                    {%endfor%}
+                  </select>
+                </div>
+               </div>
+
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+
+              </form>
+            </div>
+        </div>
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+         <!-- Main content -->
+<div class="card-body table-responsive p-0">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Course name</th>
+                      <th>Course Code</th>
+                      <th>Course Capacity</th>
+                      <th>Professor Assigned</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for course in data %}
+                    <tr>
+                      <td>{{course.course_id}}</td>
+                      <td>{{course.course_name}}</td>
+                      <td>{{course.course_code}}</td>
+                      <td>{{course.course_capacity}}</td>
+                      <td>{{course.professors}}</td>
+                      <td>
+                        <form method="post" action="ViewsCollection/deleteCourse" >
+                          {% csrf_token %}
+                          <input type="hidden" class="form-control" placeholder="" name="delete_btn" value="{{course.Course_id}}">
+                          <button type="submit" class="btn btn-danger" name="">Delete</button>
+                        </form>
+
+                      </td>
+
+                    </tr>
+                  {%endfor%}
+
+                  </tbody>
+                </table>
+              </div>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  <footer class="main-footer">
+    <div class="float-right d-none d-sm-block">
+      <b>Version</b> 3.0.2-pre
+    </div>
+    <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong> All rights
+    reserved.
+  </footer>
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+<script>
+ $(function () {
+   $('.select2').select2()
+   //Initialize Select2 Elements
+    $('.select2bs4').select2({
+      theme: 'bootstrap4'
+    })
+ })
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Add a Period</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">General Form</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <form role="form" method="POST" action="/add_Time">
+          {% csrf_token %}
+                  <div class="card card-info">
+
+              <div class="card-body">
+                <!-- /.form group -->
+
+                <!-- time Picker -->
+                <div class="bootstrap-timepicker">
+                  <div class="form-group">
+                    <label>Start Time:</label>
+
+                    <div class="input-group date" id="timepicker1" data-target-input="nearest">
+                      <input type="text" class="timepicker timepicker-with-dropdown text-center"  name="start_time"/>
+                      </div>
+
+                    <label>End Time:</label>
+
+                    <div class="input-group date" id="timepicker2" data-target-input="nearest">
+                      <input type="text" class="timepicker timepicker-with-dropdown text-center" name="end_time"/>
+                      </div>
+                    <!-- /.input group -->
+                  </div>
+                  <!-- /.form group -->
+                </div>
+                <div >
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+
+              </form>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+
+
+    </section>
+
+    <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Rooms</h3>
+
+                <div class="card-tools">
+                  <div class="input-group input-group-sm" style="width: 150px;">
+                    <input type="text" name="table_search"  class="form-control float-right" placeholder="Search">
+
+                    <div class="input-group-append">
+                      <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Start Time</th>
+                      <th>End Time</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for time in data %}
+                    <tr>
+                      <td>{{time.id}}</td>
+                      <td>{{time.start_time}}</td>
+                      <td>{{time.end_time}}</td>
+                    </tr>
+                  {%endfor%}
+
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+         <!-- Main content -->
+
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  <footer class="main-footer">
+    <div class="float-right d-none d-sm-block">
+      <b>Version</b> 3.0.2-pre
+    </div>
+    <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong> All rights
+    reserved.
+  </footer>
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+
+  <!-- /.control-sidebar -->
+{% endblock %}

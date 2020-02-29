@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block content %}
+{%if alert%}
+<script>alert({alert})</script>
+{%endif%}
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Add a Professor</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">General Form</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <!-- left column -->
+          <div class="col-md-6">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Quick Example</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form role="form" method="POST" action="/add_Professor">
+                {% csrf_token %}
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Email address</label>
+                    <input type="email" name = "email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                  </div>
+                  <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="Name" name="name">
+                  </div>
+
+                </div>
+
+
+                <!-- /.card-body -->
+               <div class="col-md-6">
+                <div class="form-group">
+                  <label>Timings</label>
+                  <select class="select2" multiple="multiple" data-placeholder="Select a Timings" style="width: 100%;" name="select_time">
+                    {%for t in data%}
+                    <option name="options">{{t.day_time}}</option>
+                    {%endfor%}
+                  </select>
+                </div>
+               </div>
+
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+
+              </form>
+            </div>
+        </div>
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+         <!-- Main content -->
+<div class="card-body table-responsive p-0">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Professor name</th>
+                      <th>Professor email</th>
+                      <th>Professor Availability</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for prof in Professors %}
+                    <tr>
+                      <td>{{prof.professor_id}}</td>
+                      <td>{{prof.professor_name}}</td>
+                      <td>{{prof.professor_email}}</td>
+                      <td>{{prof.availability}}</td>
+                    </tr>
+                  {%endfor%}
+
+                  </tbody>
+                </table>
+              </div>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  <footer class="main-footer">
+    <div class="float-right d-none d-sm-block">
+      <b>Version</b> 3.0.2-pre
+    </div>
+    <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong> All rights
+    reserved.
+  </footer>
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+<script>
+ $(function () {
+   $('.select2').select2()
+   //Initialize Select2 Elements
+    $('.select2bs4').select2({
+      theme: 'bootstrap4'
+    })
+ })
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="78d0dc5b-6d34-4544-8fae-592b54e69a20" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Auto_Scheduler/ViewsCollection/AddSemester.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Auto_Scheduler/migrations/0002_remove_semester_meetings_per_week.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Auto_Scheduler/migrations/0003_semester_meetings_per_week.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auto_Scheduler/Templates/Alert.html" beforeDir="false" afterPath="$PROJECT_DIR$/Auto_Scheduler/Templates/Alert.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auto_Scheduler/Templates/Professor.html" beforeDir="false" afterPath="$PROJECT_DIR$/Auto_Scheduler/Templates/Professor.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auto_Scheduler/Templates/Semester.html" beforeDir="false" afterPath="$PROJECT_DIR$/Auto_Scheduler/Templates/Semester.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auto_Scheduler/Templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/Auto_Scheduler/Templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auto_Scheduler/Templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Auto_Scheduler/Templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auto_Scheduler/api/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/Auto_Scheduler/api/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auto_Scheduler/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/Auto_Scheduler/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auto_Scheduler/migrations/0002_courses_course_capacity.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auto_Scheduler/migrations/0003_rooms.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auto_Scheduler/migrations/0004_day_time_professor_day_time.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auto_Scheduler/migrations/0005_dt_professor.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auto_Scheduler/migrations/0006_delete_dt_professor.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auto_Scheduler/migrations/0007_rooms_islab.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auto_Scheduler/migrations/0008_semester_semester_courses.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Auto_Scheduler/migrations/0009_semester_meetings_per_week.py" beforeDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="AutoScheduler" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/Auto_Scheduler" />
+  </component>
+  <component name="ProjectId" id="1XfauCGAALtuuj9SVuYz3GDTfUe" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="78d0dc5b-6d34-4544-8fae-592b54e69a20" name="Default Changelist" comment="" />
+      <created>1581439822982</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1581439822982</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+</project>
