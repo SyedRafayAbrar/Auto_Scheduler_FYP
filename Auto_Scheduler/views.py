@@ -154,10 +154,10 @@ def add_Professor(request):
             try:
                 serializer.save()
             except:
-                return redirect("scheduler-professor",{'alert':'Sorry :(','message':'Some thing went wrong'})
+                return redirect("scheduler-professor")
 
         else:
-            return redirect("scheduler-professor", {'alert': 'Sorry :(', 'message': 'Some thing went wrong'})
+            return redirect("scheduler-professor")
 
         prof_obj = Professors.objects.all().last()
         for i in avail:
