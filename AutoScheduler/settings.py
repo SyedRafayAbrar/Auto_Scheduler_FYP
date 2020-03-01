@@ -57,7 +57,7 @@ ROOT_URLCONF = 'AutoScheduler.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(PROJECT_DIR, 'templates')],
+        'DIRS': [os.path.join('AutoScheduler/Auto_Scheduler/', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
