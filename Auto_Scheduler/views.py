@@ -135,11 +135,11 @@ def add_Time(request):
                 serializer = serializers.TimeSerializer(data=newData)
                 if serializer.is_valid():
                     serializer.save()
-                    return redirect("scheduler-periods",{'alert':'Success!!','message':'Time Added'})
+                    return redirect("scheduler-periods")
                 else:
-                    return redirect("scheduler-periods",{'alert':'Sorry :(','message':'Some thing went wrong'})
+                    return redirect("scheduler-periods")
             except:
-                return redirect("scheduler-periods",{'alert':'Sorry :(','message':'Some thing went wrong'})
+                return redirect("scheduler-periods")
 
 def add_Professor(request):
     if request.method == "POST":
