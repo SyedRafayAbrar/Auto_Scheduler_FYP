@@ -148,7 +148,7 @@
 <center>
   {%if messages%}
   {%for message in messages%}
-  <div class="alert alert-{%if message.tags == 'error'%}danger{%else%}success{%endif%}" role="alert">
+  <div class="alert alert-{%if message.tags == 'error'%}danger{%else%}success{%endif%}" role="alert" onclick="myFunction()" id="alert_id">
     {{message}}
   </div>
   {%endfor%}
@@ -197,6 +197,14 @@
 
 
 <script>
+  function myFunction() {
+  var x = document.getElementById("alert_id");
+  if (x.style.display === "none") {
+    x.style.display = "block";
+  } else {
+    x.style.display = "none";
+  }
+}
      $(function () {
     //Initialize Select2 Elements
     $('.select2').select2()
@@ -205,7 +213,8 @@
     $('.select2bs4').select2({
       theme: 'bootstrap4'
     })
-
+    
+    
   })
 </script>
 </body>
