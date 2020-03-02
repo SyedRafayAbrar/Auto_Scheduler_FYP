@@ -145,7 +145,15 @@
     </div>
     <!-- /.sidebar -->
   </aside>
-
+<center>
+  {%if messages%}
+  {%for message in messages%}
+  <div class="alert alert-{%if message.tags == 'error'%}danger{%else%}success{%endif%}" role="alert">
+    {{message}}
+  </div>
+  {%endfor%}
+  {%endif%}
+</center>
       {% block content %}
       {% endblock %}
 </div>

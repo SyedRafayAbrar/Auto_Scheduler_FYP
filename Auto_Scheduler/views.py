@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from Auto_Scheduler.Forms import UserForm
 from Auto_Scheduler.api import serializers
+from django.contrib import messages
 from .models import Languages, Time,Days,Day_Time,Rooms,Professors,Courses,Day_Time_Professor,Courses_Professor,Semester,Semester_Courses
 
 
@@ -116,11 +117,13 @@ def addRoom(request):
         if serializer.is_valid():
             try:
                 serializer.save()
+                messages.success(request,'The room is created')
                 return redirect("scheduler-room")
             except:
                 return redirect("scheduler-room")
         else:
-            return redirect("scheduler-home")
+            messages.error(request,'Something went wrong')
+            return redirect("scheduler-room")
 
 def add_Time(request):
     if request.method == "POST":
