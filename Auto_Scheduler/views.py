@@ -104,6 +104,59 @@ def room(request):
     # return render(request, 'blog/about.html', {'title': title})
     return render(request, 'Room.html',{'data':rooms})
 
+def day(request):
+    days = Days.objects.all()
+    return render(request, 'Day.html',{'data':days})
+
+
+def addDay(request):
+    if request.method == "POST":
+        dayname = request.POST.get('day_name')
+        data = {'day_name':dayname}
+        serializer = serializers.DaySerializer(data=data)
+        if serializer.is_valid():
+            check_day = Days.objects.filter(day_name= request.POST.get('day_name'))
+            if len(check_day) > 0:
+                messages.error(request,'Already there')
+                return redirect('scheduler-days')
+
+            time = Time.objects.all()
+            if len(time) > 0:
+                try:
+                    # language = models.Languages.
+                    serializer.save()
+                except:
+                    messages.error(request,'Error adding Day')
+                    return redirect('scheduler-days')
+
+                days = Days.objects.all()
+                for day in days:
+                    for t in time:
+                        # concat_str = day.day_name+"-"+Time.objects.get(pk=t).values('start_time')+"-"+Time.objects.get(pk=t).values('end_time')
+
+                        concat_str = day.day_name + "-" + t.start_time + "-" + t.end_time
+                        check_day_time = Day_Time.objects.filter(day_time=concat_str)
+                        if len(check_day_time)==0:
+                            newData = {"time":t.id,"day":day.id,"day_time":concat_str}
+                            serializer = serializers.Time_DaySerializer(data=newData)
+                            if serializer.is_valid():
+                                try:
+                                    serializer.save()
+                                except:
+                                    messages.error(request,'Error in Loop')
+                                    return redirect('scheduler-days')
+
+                messages.success(request,'Day added Successfully')
+                return redirect('scheduler-days')
+
+
+            else:
+                messages.error(request,'Please provide a time first')
+                return redirect('scheduler-days')
+
+
+        else:
+            return Response({'message': 'Wrong Format'})
 def addRoom(request):
     if request.method == "POST":
         roomname = request.POST.get('room_name')
