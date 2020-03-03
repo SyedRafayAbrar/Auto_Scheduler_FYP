@@ -58,45 +58,77 @@ class Individual(object):
             newgene["roomAlotted"] = random.choice(ROOMS)
 
         newgene["Assigned-timeSlot"] = newtime
-        txt = newgene["Professor"].name + "-" + newtime[0:3]
-        if txt in SAMEPROFESSORS:
-            newgene["Professor"].sameDayCount = 1
-        else:
-            SAMEPROFESSORS.append(txt)
+        newgene["Professor"].courses.append(newtime)
+        # txt = newgene["Professor"].name+"-"+newtime[0:3]
+        # if txt in SAMEPROFESSORS:
+        #     newgene["Professor"].sameDayCount = 1
+        # else:
+        #     SAMEPROFESSORS.append(txt)
         # newGENE = Gene
         # print('Gene->>>>>>', newgene)
 
         return newgene
 
     def calcFitness(self):
-
+        clashMsg = ""
         alreadyCounted = []
+        countedIndex = []
         fitness = 0
         ifFound = False
+        # for c in self.chromosome:
+        # currentC =
+        # for co in range(0,len(c["Professor"].courses),+1):
+
+        #     for d_c in range(0,len(c["Professor"].courses),+1):
+        #         if d_c != co:
+        #             if d_c not in alreadyCounted:
+        #                 if c["Professor"].courses[d_c][0:3] == c["Professor"].courses[co][0:3]:
+        #                     fitness += 1
+        #                     alreadyCounted.append(d_c)
+        #                     alreadyCounted.append(co)
+
         for i in range(0, len(self.chromosome), +1):
-            if self.chromosome[i]["Assigned-timeSlot"] in self.chromosome[i]["Professor"].availability:
-                for ch in range(0, len(self.chromosome), +1):
-                    if ch != i:
-                        if self.chromosome[i]["Assigned-timeSlot"] == self.chromosome[ch]["Assigned-timeSlot"] and \
-                                self.chromosome[ch]["roomAlotted"].room == self.chromosome[i]["roomAlotted"].room:
-                            # print('CLASH WITH OTHER TEACHER')
+            for ch in range(0, len(self.chromosome), +1):
+                if ch != i:
+                    if self.chromosome[i]["Assigned-timeSlot"] == self.chromosome[ch]["Assigned-timeSlot"] and \
+                            self.chromosome[ch]["roomAlotted"].room == self.chromosome[i]["roomAlotted"].room:
+                        ifFound = True
+                        fitness += 1
+                        countedIndex.append(ch)
 
-                            ifFound = True
+                    if self.chromosome[i]["Professor"].name == self.chromosome[ch]["Professor"].name:
+                        if self.chromosome[i]["Assigned-timeSlot"] == self.chromosome[ch]["Assigned-timeSlot"]:
                             fitness += 1
-            if self.chromosome[i]["Professor"].sameDayCount > 2:
-                if self.chromosome[i]["Professor"].name not in alreadyCounted:
-                    fitness += 1
-                else:
-                    alreadyCounted.append(self.chromosome[i]["Professor"].name)
+                            countedIndex.append(ch)
 
-            else:
-                fitness += 1
             if self.chromosome[i]["roomAlotted"].capacity < self.chromosome[i]["Capacity"]:
+                clashMsg = "CAPACITY ISSUE"
+                ifFound = True
                 fitness += 1
 
             if self.chromosome[i]["isLab"] == False:
                 if self.chromosome[i]["roomAlotted"].isLab == True:
+                    clashMsg = "LAB Issue"
+                    ifFound = True
                     fitness += 1
+
+        for gene in range(0, len(self.chromosome), +1):
+            localCount = 1
+            for nextGene in range(0, len(self.chromosome), +1):
+                if gene != nextGene and nextGene not in alreadyCounted:
+                    if self.chromosome[gene]["Professor"].name == self.chromosome[nextGene]["Professor"].name:
+                        if self.chromosome[gene]["Assigned-timeSlot"] == self.chromosome[nextGene]["Assigned-timeSlot"]:
+                            self.chromosome[nextGene]["Assigned-timeSlot"] = random.choice(
+                                self.chromosome[nextGene]["Available_TimeSlots"])
+                        if self.chromosome[gene]["Assigned-timeSlot"][0:3] == self.chromosome[nextGene][
+                                                                                  "Assigned-timeSlot"][0:3]:
+                            localCount += 1
+                            if localCount > 2:
+                                fitness += 1
+                            alreadyCounted.append(gene)
+                            alreadyCounted.append(nextGene)
+
+        return fitness
 
     def crossover(self, p2):
         child = []
@@ -126,25 +158,10 @@ class Individual(object):
 
     def mutation(self, chromosome):
         mutatedChromosome = chromosome
+
         global ROOMS
         for gene in range(0, len(mutatedChromosome), +1):
-            for nextGene in range(0, len(mutatedChromosome), +1):
-
-                if nextGene != gene:
-                    if mutatedChromosome[gene]["Assigned-timeSlot"] == mutatedChromosome[nextGene]["Assigned-timeSlot"]:
-
-                        if mutatedChromosome[gene]["roomAlotted"].room == mutatedChromosome[nextGene][
-                            "roomAlotted"].room:
-                            if len(mutatedChromosome[gene]["Available_TimeSlots"]) > 1:
-                                mutatedChromosome[gene]["Assigned-timeSlot"] = random.choice(
-                                    mutatedChromosome[gene]["Available_TimeSlots"])
-                                continue
-                            elif len(mutatedChromosome[nextGene]["Available_TimeSlots"]) > 1:
-                                mutatedChromosome[nextGene]["Assigned-timeSlot"] = random.choice(
-                                    mutatedChromosome[nextGene]["Available_TimeSlots"])
-                                continue
-            # if mutatedChromosome[gene]["Professor"].sameDayCount>2:
-
+            mutatedChromosome[gene]["Assigned-timeSlot"] = random.choice(mutatedChromosome[gene]["Available_TimeSlots"])
             if mutatedChromosome[gene]["isLab"] == False:
                 if mutatedChromosome[gene]["roomAlotted"].isLab == True:
                     mutatedChromosome[gene]["roomAlotted"] = random.choice(ROOMS)
