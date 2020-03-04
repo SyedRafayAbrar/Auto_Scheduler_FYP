@@ -13,7 +13,8 @@ def add_Semester(request):
         if serializer.is_valid():
             serializer.save()
         else:
-            return redirect("scheduler-home")
+            messages.error(request,'Semester cannot be saved')
+            return redirect("scheduler-semester")
 
         seme = Semester.objects.all().last()
         for id in courses:
@@ -27,9 +28,12 @@ def add_Semester(request):
                     if serializer.is_valid():
                         serializer.save()
                     else:
+                        seme.delete()
+                        messages.error(request,'Semester cannot be saved')
                         return redirect("scheduler-semester")
         if len(Semester_Courses.objects.filter(semester=seme.id)) > 0:
-            return render(request,'Alert.html',{'data':courses})
+            messages.success(request,'The Semester is Added')
+            return redirect("scheduler-semester")
 
         return redirect("scheduler-home")
 

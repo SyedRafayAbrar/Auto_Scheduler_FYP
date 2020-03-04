@@ -24,84 +24,46 @@
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
-        <form role="form" method="POST" action="/addDay">
+        <!-- <form role="form" method="POST" action="/addDay">
           {% csrf_token %}
-                  <div class="card card-info">
-
-              <div class="card-body">
-                <!-- /.form group -->
-
-                <!-- time Picker -->
-                <div class="bootstrap-timepicker">
-                  <div class="form-group">
-                    <label>Day Name:</label>
-
-                    <div class="input-group date" id="timepicker1" data-target-input="nearest">
-                      <input type="text" class="text-center"  name="day_name"/>
-                      </div>
-
-                    <!-- /.input group -->
-                  </div>
-                  <!-- /.form group -->
-                </div>
-                <div >
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-              </div>
-              <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
-
-
-              </form>
+                
+              </form> -->
         <!-- /.row -->
+        <div class="card-body table-responsive p-0">
+            <table class="table table-hover">
+                <thead>
+                  <tr>
+                      <th></th>
+                    <th>ID</th>
+                    <th>Semester Name</th>
+                    <th>Number Of Courses</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for semester in Semesters %}
+                  <tr>
+                      <td>
+                        <div class="icheck-primary d-inline">
+                            <input type="radio" id="{{semester.semester_id}}" name="r1">
+                            <label for="{{semester.semester_id}}">
+                            </label>
+                          </div>
+                      </td>
+                    <td>{{semester.semester_id}}</td>
+                    <td>{{semester.semester_name}}</td>
+                    <td>{{semester.courses_count}}</td>
+                  </tr>
+                {%endfor%}
+
+                </tbody>
+              </table>
+          </div>
       </div><!-- /.container-fluid -->
 
 
     </section>
 
-    <div class="row">
-          <div class="col-12">
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">Rooms</h3>
-
-                <div class="card-tools">
-                  <div class="input-group input-group-sm" style="width: 150px;">
-                    <input type="text" name="table_search"  class="form-control float-right" placeholder="Search">
-
-                    <div class="input-group-append">
-                      <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body table-responsive p-0">
-                <table class="table table-hover">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Day</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  {% for day in data %}
-                    <tr>
-                      <td>{{day.id}}</td>
-                      <td>{{day.day_name}}</td>
-                      
-                    </tr>
-                  {%endfor%}
-
-                  </tbody>
-                </table>
-              </div>
-              <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
-          </div>
-        </div>
          <!-- Main content -->
 
     <!-- /.content -->
