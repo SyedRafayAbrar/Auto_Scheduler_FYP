@@ -203,6 +203,14 @@ def add_Professor(request):
         avail = request.POST.getlist('select_time')
         prof = request.POST.get('name')
         email = request.POST.get('email')
+        permanant_switch = request.POST.get('permanant_switch')
+        if len(Day_Time.objects.all()) == 0:
+            messages.error(request,'Please Add Day and Time First')
+            return redirect("scheduler-professor")
+            
+        isPermanant = False
+        if permanant_switch:
+            isPermanant = True
 
         data = {"professor_name":prof,"professor_email":email}
         serializer = serializers.ProfessorSerializer(data=data)
@@ -216,25 +224,45 @@ def add_Professor(request):
             return redirect("scheduler-professor")
 
         prof_obj = Professors.objects.all().last()
-        for i in avail:
-            obj = Day_Time.objects.filter(day_time=i)
-            n_newData = {}
-            for j in obj:
-                n_newData = {"prof": prof_obj.id, "day_time": j.id}
+        if not isPermanant:
+            for i in avail:
+            
+                obj = Day_Time.objects.filter(day_time=i)
+                n_newData = {}
+                for j in obj:
+                    n_newData = {"prof": prof_obj.id, "day_time": j.id}
 
-            n_serializer = serializers.Day_Time_prof_Serializer(data=n_newData)
-            if n_serializer.is_valid():
-                try:
-                    n_serializer.save()
+                n_serializer = serializers.Day_Time_prof_Serializer(data=n_newData)
+                if n_serializer.is_valid():
+                    try:
+                        n_serializer.save()
 
-                except:
+                    except:
+                        return redirect("scheduler-professor")
+
+                else:
+                    return redirect("scheduler-professor")
+        else:
+            objects = Day_Time.objects.all()
+            for obj in objects:
+                n_newData = {"prof": prof_obj.id, "day_time": obj.id}
+                n_serializer = serializers.Day_Time_prof_Serializer(data=n_newData)
+                if n_serializer.is_valid():
+                    try:
+                        n_serializer.save()
+
+                    except:
+                        return redirect("scheduler-professor")
+
+                else:
                     return redirect("scheduler-professor")
 
-            else:
-                return redirect("scheduler-professor")
         if len(Day_Time_Professor.objects.filter(prof=prof_obj.id)) > 0:
-            return redirect("scheduler-home")
+            messages.success(request,'The Professor is added')
+            return redirect("scheduler-professor")
+
         return redirect("scheduler-professor")
+
 
 def addCourse(request):
     if request.method == "POST":
@@ -251,6 +279,7 @@ def addCourse(request):
                 serializer.save()
 
             except:
+                
                 return redirect("scheduler-professor")
         else:
             return redirect("scheduler-professor")

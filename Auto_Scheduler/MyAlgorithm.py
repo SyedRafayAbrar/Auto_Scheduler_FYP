@@ -1,6 +1,6 @@
 import random
 from random import randint
-from com.Classes.Room import Room
+from com.Classes import Room
 
 POPULATION_SIZE = 100
 GENES = []

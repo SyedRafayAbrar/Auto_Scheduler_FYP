@@ -47,21 +47,30 @@
                     <input type="text" class="form-control" id="name" placeholder="Name" name="name">
                   </div>
 
+                  <div class="form-group">
+                    <div class="custom-control custom-switch">
+                      <input type="checkbox" class="custom-control-input" name="permanant_switch" id="customSwitch1" onclick="toggleFunction()">
+                      <label class="custom-control-label" for="customSwitch1">Toggle this to for Permanant Teacher</label>
+                    </div>
+                  </div>
+
+
+                  <div class="col-md-6" id="timeselection">
+                    <div class="form-group">
+                      <label>Timings</label>
+                      <select class="select2" multiple="multiple" data-placeholder="Select a Timings" style="width: 100%;" name="select_time" >
+                        {%for t in data%}
+                        <option name="options">{{t.day_time}}</option>
+                        {%endfor%}
+                      </select>
+                    </div>
+                   </div>
+                  
                 </div>
-
-
                 <!-- /.card-body -->
-               <div class="col-md-6">
-                <div class="form-group">
-                  <label>Timings</label>
-                  <select class="select2" multiple="multiple" data-placeholder="Select a Timings" style="width: 100%;" name="select_time">
-                    {%for t in data%}
-                    <option name="options">{{t.day_time}}</option>
-                    {%endfor%}
-                  </select>
-                </div>
-               </div>
+             
 
+               
                 <div class="card-footer">
                   <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
@@ -73,7 +82,14 @@
         <!-- /.row -->
       </div><!-- /.container-fluid -->
     </section>
+
          <!-- Main content -->
+         <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Professors</h3>
+              </div>
 <div class="card-body table-responsive p-0">
                 <table class="table table-hover">
                   <thead>
@@ -100,6 +116,10 @@
               </div>
     <!-- /.content -->
   </div>
+  </div>
+  </div>
+  </div>
+
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="float-right d-none d-sm-block">
