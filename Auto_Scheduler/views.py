@@ -41,6 +41,9 @@ def course(request):
         data.append(newdata)
     return render(request, 'Course.html',{'data': data,'professors':profs})
 
+def createTable(request):
+    return render(request, 'createtable.html')
+    
 def home(request):
 
     lecturerCount = len(Professors.objects.all())

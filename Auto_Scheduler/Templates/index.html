@@ -97,8 +97,12 @@
         <br>
 
           <div class="container-fluid">
-
-          <button type="button" class="btn btn-block bg-gradient-info btn-lg">Create Table</button>
+            <form role="form" method="POST" action="createTable">
+              {% csrf_token %}
+                
+                <button type="submit" class="btn btn-block bg-gradient-info btn-lg">Create Table</button>
+              </form>
+          
 
           </div>
 

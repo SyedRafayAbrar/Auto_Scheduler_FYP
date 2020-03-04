@@ -32,6 +32,7 @@ urlpatterns = [
     path('addRoom',views.addRoom,name='scheduler-addroom'),#add_Time
     path('addDay',views.addDay,name='scheduler-addDay'),#adddDay
     path('add_Time',views.add_Time,name='scheduler-addTime'),
+    path('createTable',views.createTable,name='scheduler-createtable'),
     path('add_Professor',views.add_Professor,name='scheduler-addProfessor'),
     path('add_Semester',AddSemester.add_Semester,name='scheduler-addSemester'),
     path('addCourse', views.addCourse, name='scheduler-addcourse'),
