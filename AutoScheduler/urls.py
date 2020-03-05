@@ -22,7 +22,7 @@ from Auto_Scheduler.ViewsCollection import DeleteCourseView,AddSemester
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home,name='scheduler-home'),
-    # path('login', views.login,name='scheduler-login'),
+    path('login', views.login,name='scheduler-login'),
     path('professor', views.professor,name='scheduler-professor'),
     path('periods', views.period,name='scheduler-periods'),
     path('room', views.room,name='scheduler-room'),

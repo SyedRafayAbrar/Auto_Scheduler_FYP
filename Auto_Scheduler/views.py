@@ -7,6 +7,13 @@ from .models import Languages, Time,Days,Day_Time,Rooms,Professors,Courses,Day_T
 
 from Auto_Scheduler.models import Users
 # Create your views here.
+def login(request):
+
+    return render(request,"login.html")
+    
+# def loginMethod(request):
+#     if request.method == "POST":
+
 
 def user(request):
     if request.method == "POST":
@@ -59,7 +66,8 @@ def createTable(request):
     return render(request, 'createtable.html',{'Semesters': semester_data,"data":courses_data})
 
 def home(request):
-
+    if request.session.has_key('username') == False:
+        return render(request,'login.html')
     lecturerCount = len(Professors.objects.all())
     roomCount = len(Rooms.objects.all())
     coursesCount = len(Courses.objects.all())
@@ -176,6 +184,7 @@ def addDay(request):
             return Response({'message': 'Wrong Format'})
 def addRoom(request):
     if request.method == "POST":
+        
         roomname = request.POST.get('room_name')
         room_capacity = request.POST.get('room_capacity')
         isLab = False
