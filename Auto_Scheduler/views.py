@@ -126,12 +126,21 @@ def professor(request):
         time = Day_Time_Professor.objects.filter(prof=prof.id)
         for t in time:
             d = Day_Time.objects.filter(id=t.id)
-            for dt in d:
-                avail+=dt.day_time+', '
+            for dt in range(0,len(d),+1):
+                if dt != len(d):
+                    avail+=d[dt].day_time+', '
+                else:
+                    avail += d[dt].day_time
 
-        newdata = {'professor_id': prof.id, 'professor_name': prof.professor_name,
-                   'professor_email': prof.professor_email, 'availability': avail}
-        data.append(newdata)
+        if prof.isPermanant == False:
+            newdata = {'professor_id': prof.id, 'professor_name': prof.professor_name,
+                       'professor_email': prof.professor_email, 'availability': avail}
+            data.append(newdata)
+        else:
+            newdata = {'professor_id': prof.id, 'professor_name': prof.professor_name,
+                       'professor_email': prof.professor_email, 'availability': 'Permanant'}
+            data.append(newdata)
+
 
     return render(request, 'Professor.html',{'data':day_t,'Professors':data})
 
@@ -159,6 +168,9 @@ def day(request):
 def addDay(request):
     if request.method == "POST":
         dayname = request.POST.get('day_name')
+        if dayname == "":
+            messages.error(request, 'Name Cannot be empty')
+            return redirect('scheduler-days')
         data = {'day_name':dayname}
         serializer = serializers.DaySerializer(data=data)
         if serializer.is_valid():
@@ -260,7 +272,7 @@ def add_Professor(request):
         if permanant_switch:
             isPermanant = True
 
-        data = {"professor_name":prof,"professor_email":email}
+        data = {"professor_name":prof,"professor_email":email,"isPermanant":isPermanant}
         serializer = serializers.ProfessorSerializer(data=data)
         if serializer.is_valid():
             try:

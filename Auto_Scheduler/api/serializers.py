@@ -15,7 +15,7 @@ class TimeSerializer(serializers.ModelSerializer):
 class ProfessorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Professors
-        fields = ('id','professor_name','professor_email')
+        fields = ('id','professor_name','professor_email','isPermanant')
 
 class ShowProfessorSerializer(serializers.ModelSerializer):
     class Meta:

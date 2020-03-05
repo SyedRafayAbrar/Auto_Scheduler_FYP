@@ -47,6 +47,7 @@ class Professors(models.Model):
     id = models.AutoField(primary_key=True)
     professor_name = models.CharField(max_length=100,default=None)
     professor_email = models.CharField(max_length=100,default=None)
+    isPermanant = models.BooleanField(default=False)
 
     class Meta:
         db_table = "Professors"
