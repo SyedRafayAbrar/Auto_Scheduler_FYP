@@ -47,6 +47,15 @@
 
 </head>
 <body class="hold-transition lockscreen">
+  {%if messages%}
+  {%for message in messages%}
+  <center>
+  <div class="alert alert-{%if message.tags == 'error'%}danger{%else%}success{%endif%}" role="alert" onclick="myFunction()" id="alert_id">
+    {{message}}
+  </div>
+</center>
+  {%endfor%}
+  {%endif%}
   <!-- Automatic element centering -->
   <div class="lockscreen-wrapper">
     <div class="lockscreen-logo">
@@ -64,12 +73,13 @@
       <!-- /.lockscreen-image -->
   
       <!-- lockscreen credentials (contains the form) -->
-      <form class="lockscreen-credentials">
+      <form class="lockscreen-credentials" method="POST" action="/loginMethod">
+        {% csrf_token %}
         <div class="input-group">
-          <input type="password" class="form-control" placeholder="password">
+          <input type="password" class="form-control" placeholder="password" name="password">
   
           <div class="input-group-append">
-            <button type="button" class="btn"><i class="fas fa-arrow-right text-muted"></i></button>
+            <button type="submit" class="btn"><i class="fas fa-arrow-right text-muted"></i></button>
           </div>
         </div>
       </form>

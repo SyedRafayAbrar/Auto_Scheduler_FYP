@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from Auto_Scheduler.Forms import UserForm
 from Auto_Scheduler.api import serializers
 from django.contrib import messages
-from .models import Languages, Time,Days,Day_Time,Rooms,Professors,Courses,Day_Time_Professor,Courses_Professor,Semester,Semester_Courses
+from .models import  Users,Languages, Time,Days,Day_Time,Rooms,Professors,Courses,Day_Time_Professor,Courses_Professor,Semester,Semester_Courses
 
 
 from Auto_Scheduler.models import Users
@@ -11,9 +11,26 @@ def login(request):
 
     return render(request,"login.html")
     
-# def loginMethod(request):
-#     if request.method == "POST":
+def logout(request):
+    try:
+      del request.session['username']
+      return redirect("scheduler-login")
+    except:
+      pass
 
+def loginMethod(request):
+    if request.method == "POST":
+        passwrd = request.POST.get('password')
+        if len(Users.objects.filter(uName="admin")) > 0:
+            u = Users.objects.filter(uName="admin").last()
+            if u.password == passwrd:
+                request.session['username'] = "admin"
+                return redirect("scheduler-home")
+            else:
+                messages.error(request,'Incorrect Password')
+                return redirect("scheduler-login")
+        else:
+            return redirect("scheduler-login")
 
 def user(request):
     if request.method == "POST":
@@ -68,6 +85,11 @@ def createTable(request):
 def home(request):
     if request.session.has_key('username') == False:
         return redirect("scheduler-login")
+    
+    # try:
+    #   del request.session['username']
+    # except:
+    #   pass
     lecturerCount = len(Professors.objects.all())
     roomCount = len(Rooms.objects.all())
     coursesCount = len(Courses.objects.all())
