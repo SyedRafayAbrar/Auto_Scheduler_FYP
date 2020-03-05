@@ -2,8 +2,8 @@ from django.db import models
 
 # Create your models here.
 class Users(models.Model):
-    uId = models.CharField(max_length=20)
     uName = models.CharField(max_length=100)
+    password = models.CharField(max_length=100,default=None)
 
     class Meta:
         db_table = "Users"

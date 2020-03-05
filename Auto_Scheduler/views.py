@@ -67,7 +67,7 @@ def createTable(request):
 
 def home(request):
     if request.session.has_key('username') == False:
-        return render(request,'login.html')
+        return redirect("scheduler-login")
     lecturerCount = len(Professors.objects.all())
     roomCount = len(Rooms.objects.all())
     coursesCount = len(Courses.objects.all())
