@@ -79,7 +79,7 @@
                       <th>ID</th>
                       <th>Name</th>
                       <th>Capicty</th>
-                      <th>Is LAB</th>
+                      <th>Room Type</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -90,6 +90,9 @@
                       <td>{{room.room_capacity}}</td>
                       {%if room.islab%}
                         <td>LAB</td>
+
+                      {%else%}
+                      <td>Room</td>
                       {%endif%}
                     </tr>
                   {%endfor%}
