@@ -125,10 +125,7 @@ def professor(request):
         avail = ""
         time = Day_Time_Professor.objects.filter(prof=prof.id)
         for t in time:
-            d = Day_Time.objects.filter(id=t.id)
-            for dt in d:
-                    avail+=dt.day_time+' || '
-
+            avail += t.day_time.day_time + " || "
 
         if prof.isPermanant:
             newdata = {'professor_id': prof.id, 'professor_name': prof.professor_name,
@@ -297,6 +294,7 @@ def add_Professor(request):
                         n_serializer.save()
 
                     except:
+
                         return redirect("scheduler-professor")
 
                 else:
@@ -311,9 +309,11 @@ def add_Professor(request):
                         n_serializer.save()
 
                     except:
+                        messages.error(request, 'Some error')
                         return redirect("scheduler-professor")
 
                 else:
+                    messages.error(request, 'The Professor is not added')
                     return redirect("scheduler-professor")
 
         if len(Day_Time_Professor.objects.filter(prof=prof_obj.id)) > 0:
