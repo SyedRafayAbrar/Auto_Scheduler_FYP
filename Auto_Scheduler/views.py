@@ -72,15 +72,10 @@ def createTable(request):
     for d in semesters:
         courses = Semester_Courses.objects.filter(semester=d.id)
         newdata = {'semester_id': d.id, 'semester_name': d.name,
-                    'courses_count': len(courses)}
+                    'courses': courses}
         semester_data.append(newdata)
 
-    courses_data = []
-    sem_courses = Courses_Professor.objects.all()
-    for s_c in sem_courses:
-        s_data = s_c.course.course_name+"-"+s_c.prof.professor_name
-        courses_data.append({"str":s_data,"id":s_c.id})
-    return render(request, 'createtable.html',{'Semesters': semester_data,"data":courses_data})
+    return render(request, 'createtable.html',{'Semesters': semester_data})
 
 def home(request):
     if request.session.has_key('username') == False:

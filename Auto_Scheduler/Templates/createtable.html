@@ -54,7 +54,14 @@
                       </td>
                     <td>{{semester.semester_id}}</td>
                     <td>{{semester.semester_name}}</td>
-                    <td>{{semester.courses_count}}</td>
+                    <td>
+                      <table>
+                        {%for d in semester.courses%}
+                        <td>{{d.Course.course_name}}</td>
+
+                        {%endfor%}
+                      </table>
+                    </td>
                   </tr>
                 {%endfor%}
 
