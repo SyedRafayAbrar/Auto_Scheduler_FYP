@@ -6,7 +6,7 @@ from Auto_Scheduler.models import Rooms,Professors,Semester,Day_Time,Semester_Co
 import random
 from random import randint,randrange
 
-POPULATION_SIZE = 100
+POPULATION_SIZE = 10
 GENES = []
 ROOMS = []
 LABS = []
@@ -52,6 +52,7 @@ class Individual(object):
                     newgene["Available_TimeSlots"].append(time)
 
         newtime = random.choice(newgene["Available_TimeSlots"])
+
 
         # print('newtime', newtime)
         if newgene["isLab"] == True:
@@ -228,24 +229,32 @@ def create_Time_Table(request):
         roomCollection = []
         rooms = Rooms.objects.all()
         day_time = Day_Time.objects.all()
+
         for room in rooms:
+            p_lab = False
+            lab = False
             if room.is_physics_lab:
+                p_lab = True
                 isPhysics_LabsAvailable = True
 
             if room.islab:
+                lab = True
                 isLabsAvailable = True
                 
-            roomCollection.append(Room.Room(room.room_name,room.room_capacity,room.islab,room.is_physics_lab))
-        
+            roomCollection.append(Room.Room(room.room_name,room.room_capacity,lab,p_lab))
+
+
+
         if isPhysics_LabsAvailable == False:
             messages.error(request,"No PHYSICS LABS Available")
-            redirect("scheduler-createtable")
+            return redirect("scheduler-createtable")
         
         if isLabsAvailable == False:
             messages.error(request,"No LABS Available")
-            redirect("scheduler-createtable")
+            return redirect("scheduler-createtable")
 
         for r in roomCollection:
+
             if r.isLab == True:
                 LABS.append(r)
             elif r.isPhysicsLab == True:
@@ -253,23 +262,38 @@ def create_Time_Table(request):
             else:
                 ROOMS.append(r)
 
+
+
         for d_t in day_time:
             arrayofTime.append(d_t.day_time)
 
-        meetingsPerweek = currentSemester.meetings_per_week
+        meetingsperweek = currentSemester.meetings_per_week
         Courses = Semester_Courses.objects.filter(semester=currentSemester.id)
 
 
-        for _ in range(0,meetingsPerweek,+1):  # FOR SUMMER SEMESTER
+        if len(LABS)<=0:
+            messages.error(request, "No LABS Available")
+            return redirect("scheduler-createtable")
+        if len(PhysicsLAB) <= 0:
+            messages.error(request, "No PHYSICS LABS Available")
+            return redirect("scheduler-createtable")
+        if len(ROOMS)<=0:
+            messages.error(request, "No Room Available")
+            return redirect("scheduler-createtable")
+
+        for _ in range(0,meetingsperweek,+1):  # FOR SUMMER SEMESTER
             for course in Courses:
                 avail = []
                 availability = Day_Time_Professor.objects.filter(prof=course.selected_Professor.id)
                 for a in availability:
-                    avail.append(a.day_time)
+                    avail.append(a.day_time.day_time)
                 
                 _id = course.selected_Professor.id
                 name = course.selected_Professor.professor_name
+
                 profe = Professor.Professor(_id,name,avail,"",0,[])
+                # messages.error(request, avail)
+                # return redirect("scheduler-createtable")
                 temp = {"Name": course.Course.course_name,"Professor":profe,"Capacity":course.Course.course_capacity,"Assigned-timeSlot": "", "Available_TimeSlots": [],"roomAlotted": None, "isLab": course.Course.course_isLab,"isPhysics_Lab":course.Course.course_isPhysics_Lab}
                 COURSES.append(temp)
 
@@ -278,18 +302,18 @@ def create_Time_Table(request):
             gnome = Individual.create_gnome()      
             population.append(Individual(gnome))
             # print('Fitness-----', Individual(gnome).fitness)
-        
-     
+        #
+        # messages.error(request, "before while")
+        # return redirect("scheduler-createtable")
         while not ifFound:
         # sort the population in increasing order of fitness score
+        #     messages.error(request, "in While")
+        #     return redirect("scheduler-createtable")
             population = sorted(population, key=lambda x: x.fitness)
             # print('Fitness After-----', population[0].fitness)
 
             if population[0].fitness <= 0:
                 ifFound = True
-            # print('SELECTED GENERATION')
-            # for i in population[0].chromosome:
-            #     print('', i['Name'], i['Assigned-timeSlot'] )
                 break
             elif population[0].fitness == prevFitness:
                 fitness_Same_Count += 1
@@ -310,8 +334,7 @@ def create_Time_Table(request):
                 new_generation.append(ind)
 
             ns = int((90 * POPULATION_SIZE) // 100)
-        # print(ns)
-        # sub = ns - s
+
             for _ in range(ns):
                 rand = randint(s, ns - 1)
                 parent1 = population[rand]
@@ -322,25 +345,14 @@ def create_Time_Table(request):
                 new_generation.append(child)
 
             population = new_generation
-        # print('new', population[0].chromosome)
-        # print('Generation: ', generation)
-        # print('Population: ', population[0].chromosome)
-        # print('Fitness: ', population[0].fitness)
 
-        # print("Generation: {}\tDict: {}\tFitness: {}".format(generation, "".join(population[0].chromosome),population[0].fitness))
 
             generation += 1
 
         print('SELECTED GENERATION ')
         data = []
         for ch in population[0].chromosome:
-        #     print('Name : ', ch["Name"])
-        #     print('Professor : ', ch["Professor"].name)
-        #     print('TimeSlot : ', ch["Assigned-timeSlot"])
-        # # print('Available : ', ch["Available_TimeSlots"])
-        # print('Room : ', ch["roomAlotted"].room)
-        # print('\n')
             n_data = {"Name": ch["Name"], "Professor":ch["Professor"].name, "TimeSlot":ch["Assigned-timeSlot"],"Room":ch["roomAlotted"].room}
             data.append(n_data)
     
-        render(request, 'Alert.html',{'data': data})
+        return render(request, 'Alert.html',{'data': data})
