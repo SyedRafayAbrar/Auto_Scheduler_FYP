@@ -79,6 +79,7 @@ class Rooms(models.Model):
     room_name = models.CharField(max_length=100,default=None)
     room_capacity = models.IntegerField(max_length=100,default=None)
     islab = models.BooleanField(default=False)
+    is_physics_lab = models.BooleanField(default=False)
 
     class Meta:
         db_table = "Rooms"

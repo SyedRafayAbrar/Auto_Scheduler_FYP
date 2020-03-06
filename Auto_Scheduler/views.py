@@ -218,9 +218,15 @@ def addRoom(request):
         roomname = request.POST.get('room_name')
         room_capacity = request.POST.get('room_capacity')
         isLab = False
+        isPhysicsLab = False
+        if request.POST.get('physicslab_switch'):
+            isPhysicsLab = True
+        else:
+            isPhysicsLab = False
+
         if request.POST.get('lab_switch'):
             isLab = True
-        newData = {"room_name": roomname, "room_capacity": room_capacity,"islab":isLab}
+        newData = {"room_name": roomname, "room_capacity": room_capacity,"islab":isLab,"is_physics_lab":isPhysicsLab}
 
         serializer = serializers.RoomSerializer(data=newData)
         if serializer.is_valid():

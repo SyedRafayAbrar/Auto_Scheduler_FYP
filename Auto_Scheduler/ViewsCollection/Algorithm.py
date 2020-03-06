@@ -219,12 +219,39 @@ def create_Time_Table(request):
         ifFound = False
         population = []
         generation = 1
+        isLabsAvailable = False
+        isPhysics_LabsAvailable = False
+
+        # messages.error(request,selected_id)
+        # return redirect("scheduler-createtable")
         currentSemester = Semester.objects.filter(id=selected_id).last()
-        
+        roomCollection = []
         rooms = Rooms.objects.all()
         day_time = Day_Time.objects.all()
         for room in rooms:
-            ROOMS.append(Room(room.room_name,room.room_capacity,room.islab))
+            if room.is_physics_lab:
+                isPhysics_LabsAvailable = True
+
+            if room.islab:
+                isLabsAvailable = True
+                
+            roomCollection.append(Room.Room(room.room_name,room.room_capacity,room.islab,room.is_physics_lab))
+        
+        if isPhysics_LabsAvailable == False:
+            messages.error(request,"No PHYSICS LABS Available")
+            redirect("scheduler-createtable")
+        
+        if isLabsAvailable == False:
+            messages.error(request,"No LABS Available")
+            redirect("scheduler-createtable")
+
+        for r in roomCollection:
+            if r.isLab == True:
+                LABS.append(r)
+            elif r.isPhysicsLab == True:
+                PhysicsLAB.append(r)
+            else:
+                ROOMS.append(r)
 
         for d_t in day_time:
             arrayofTime.append(d_t.day_time)
@@ -233,7 +260,7 @@ def create_Time_Table(request):
         Courses = Semester_Courses.objects.filter(semester=currentSemester.id)
 
 
-        for mpw in range(0,meetingsPerweek,+1):  # FOR SUMMER SEMESTER
+        for _ in range(0,meetingsPerweek,+1):  # FOR SUMMER SEMESTER
             for course in Courses:
                 avail = []
                 availability = Day_Time_Professor.objects.filter(prof=course.selected_Professor.id)
@@ -248,13 +275,11 @@ def create_Time_Table(request):
 
         GENES = COURSES
         for _ in range(POPULATION_SIZE):
-            gnome = Individual.create_gnome()
-        # print('GNOME',gnome)
+            gnome = Individual.create_gnome()      
             population.append(Individual(gnome))
-
-            print('Fitness-----', Individual(gnome).fitness)
+            # print('Fitness-----', Individual(gnome).fitness)
         
-    # Population Created
+     
         while not ifFound:
         # sort the population in increasing order of fitness score
             population = sorted(population, key=lambda x: x.fitness)
