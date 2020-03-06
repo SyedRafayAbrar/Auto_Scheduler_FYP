@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from Auto_Scheduler import views
-from Auto_Scheduler.ViewsCollection import DeleteCourseView,AddSemester
+from Auto_Scheduler.ViewsCollection import DeleteCourseView,AddSemester,Algorithm
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,5 +39,6 @@ urlpatterns = [
     path('add_Semester',AddSemester.add_Semester,name='scheduler-addSemester'),
     path('addCourse', views.addCourse, name='scheduler-addcourse'),
     path('ViewsCollection/deleteCourse', DeleteCourseView.deleteCourse, name='scheduler-deletecourse'),
-    path('api/',include('Auto_Scheduler.api.urls'))
+    path('api/',include('Auto_Scheduler.api.urls')),
+    path('create_Time_Table', Algorithm.create_Time_Table, name='scheduler-createTable'),
 ]

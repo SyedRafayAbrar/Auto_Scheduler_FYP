@@ -9,7 +9,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Add a Period</h1>
+            <h1>Select Semester</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -29,6 +29,8 @@
                 
               </form> -->
         <!-- /.row -->
+        <form method="POST" action="/create_Time_Table">
+          {% csrf_token %}
         <div class="card-body table-responsive p-0">
             <table class="table table-hover">
                 <thead>
@@ -45,7 +47,7 @@
                   <tr>
                       <td>
                         <div class="icheck-primary d-inline">
-                            <input type="radio" id="{{semester.semester_id}}" name="r1">
+                            <input type="radio" id="{{semester.semester_id}}" value="{{semester.semester_id}}" name="r1">
                             <label for="{{semester.semester_id}}">
                             </label>
                           </div>
@@ -59,6 +61,12 @@
                 </tbody>
               </table>
           </div>
+          <br>
+          <br>
+          <br>
+          <br>
+          <button type="submit" class="btn btn-block bg-gradient-info btn-lg">Submit</button>
+        </form>
       </div><!-- /.container-fluid -->
 
 

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-
+from django.contrib import messages
 from Auto_Scheduler.api import serializers
 from Auto_Scheduler.models import Courses,Courses_Professor,Semester,Semester_Courses
 
