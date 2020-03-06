@@ -40,6 +40,7 @@ class Courses(models.Model):
     course_name = models.CharField(max_length=100,default=None)
     course_capacity = models.IntegerField(max_length=100,default=None)
     course_isLab = models.BooleanField(default=False)
+    course_isPhysics_Lab = models.BooleanField(default=False)
     class Meta:
         db_table = "Courses"
 

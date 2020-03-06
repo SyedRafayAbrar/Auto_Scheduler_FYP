@@ -46,7 +46,7 @@ class RoomSerializer(serializers.ModelSerializer):
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Courses
-        fields = ('course_code','course_name','course_capacity')
+        fields = ('course_code','course_name','course_capacity','course_isLab','course_isPhysics_Lab')
 
 class Course_ProfessorSerializer(serializers.ModelSerializer):
     class Meta:
