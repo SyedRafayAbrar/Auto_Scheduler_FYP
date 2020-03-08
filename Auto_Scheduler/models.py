@@ -1,5 +1,5 @@
 from django.db import models
-
+import datetime
 # Create your models here.
 class Users(models.Model):
     uName = models.CharField(max_length=100)
@@ -101,3 +101,22 @@ class Semester_Courses(models.Model):
 
     class Meta:
         db_table = "Semester_Courses"
+
+
+class Module(models.Model):
+    id = models.AutoField(primary_key=True)
+    date_time = models.DateTimeField(default=datetime.datetime.now())
+
+    class Meta:
+        db_table = "Module"
+
+class Courses_Module(models.Model):
+    id = models.AutoField(primary_key=True)
+    module = models.ForeignKey(Module,on_delete=models.CASCADE,default=None)
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE, default=None)
+    selectedProfessor = models.ForeignKey(Professors, on_delete=models.CASCADE, default=None)
+    assignedTime = models.ForeignKey(Day_Time, on_delete=models.CASCADE, default=None)
+    assigned_room = models.ForeignKey(Rooms, on_delete=models.CASCADE, default=None)
+
+    class Meta:
+        db_table = "Courses_Module"
