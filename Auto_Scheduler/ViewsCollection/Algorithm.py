@@ -39,22 +39,16 @@ class Individual(object):
         create random genes for mutation
         '''
         global ROOMS, PhysicsLAB,SAMEPROFESSORS,LABS,arrayofTime
-        # gene = random.choice(arrayofTime) ,"Available_TimeSlots":[]
 
         newgene = Gene
-        # newgene["Available_TimeSlots"] =
 
         if len(newgene["Available_TimeSlots"]) == 0:
             for time in arrayofTime:
-                # print('time', time)
                 if time in newgene["Professor"].availability:
-                    # Gene["Assigned-timeSlot"] = time
                     newgene["Available_TimeSlots"].append(time)
 
         newtime = random.choice(newgene["Available_TimeSlots"])
 
-
-        # print('newtime', newtime)
         if newgene["isLab"] == True:
             newgene["roomAlotted"] = random.choice(LABS)
         elif newgene["isPhysics_Lab"]:
@@ -64,13 +58,7 @@ class Individual(object):
 
         newgene["Assigned-timeSlot"] = newtime
         newgene["Professor"].courses.append(newtime)
-        # txt = newgene["Professor"].name+"-"+newtime[0:3]
-        # if txt in SAMEPROFESSORS:
-        #     newgene["Professor"].sameDayCount = 1
-        # else:
-        #     SAMEPROFESSORS.append(txt)
-        # newGENE = Gene
-        # print('Gene->>>>>>', newgene)
+
 
         return newgene
 
@@ -80,18 +68,6 @@ class Individual(object):
         countedIndex = []
         fitness = 0
         ifFound = False
-        # for c in self.chromosome:
-            # currentC = 
-            # for co in range(0,len(c["Professor"].courses),+1):
-
-            #     for d_c in range(0,len(c["Professor"].courses),+1):
-            #         if d_c != co:
-            #             if d_c not in alreadyCounted:
-            #                 if c["Professor"].courses[d_c][0:3] == c["Professor"].courses[co][0:3]:
-            #                     fitness += 1
-            #                     alreadyCounted.append(d_c)
-            #                     alreadyCounted.append(co)
-
             
         for i in range(0, len(self.chromosome), +1):
             for ch in range(0, len(self.chromosome), +1):
@@ -142,26 +118,22 @@ class Individual(object):
         child = []
         isOdd = False
         num = len(p2.chromosome) // 2
-        # print('Before CrossOver', p2.chromosome)
-        # print('Total', num)
+
         if num % 2 != 0:
             num = len(p2.chromosome) - 1 // 2
             isOdd = True
-        # num = num//2
-        # print(num)
+
         randomNum = randint(0, num)
         sub = len(p2.chromosome) - randomNum
-        # child.extend(self.chromosome[:randomNum])
+
         for i in range(0, num - 1, +1):
-            # print(p2.chromosome[i]['Assigned-timeSlot'])
+
             child.append(p2.chromosome[i])
         for j in range(num - 1, len(p2.chromosome), +1):
-            # print(self.chromosome[j]['Assigned-timeSlot'])
+
             child.append(self.chromosome[j])
         newchild = self.mutation(child)
-        # print('After CrossOver', child)
 
-        # print('Child Len', len(child))
         return Individual(newchild)
 
     def mutation(self, chromosome):
@@ -204,7 +176,6 @@ class Individual(object):
 
 def create_Time_Table(request):
     if request.method == "POST":
-        # ch = request.POST.get('r1')
 
         global POPULATION_SIZE
         global arrayofTime
@@ -213,7 +184,7 @@ def create_Time_Table(request):
         global ROOMS
         selected_id = request.POST.get('r1')
 
-        meetingsPerweek = 1
+        meetingsperweek = 1
         prevFitness = 10
         COURSES = []
         fitness_Same_Count = 0
@@ -223,8 +194,6 @@ def create_Time_Table(request):
         isLabsAvailable = False
         isPhysics_LabsAvailable = False
 
-        # messages.error(request,selected_id)
-        # return redirect("scheduler-createtable")
         currentSemester = Semester.objects.filter(id=selected_id).last()
         roomCollection = []
         rooms = Rooms.objects.all()
@@ -301,16 +270,10 @@ def create_Time_Table(request):
         for _ in range(POPULATION_SIZE):
             gnome = Individual.create_gnome()      
             population.append(Individual(gnome))
-            # print('Fitness-----', Individual(gnome).fitness)
-        #
-        # messages.error(request, "before while")
-        # return redirect("scheduler-createtable")
+
         while not ifFound:
-        # sort the population in increasing order of fitness score
-        #     messages.error(request, "in While")
-        #     return redirect("scheduler-createtable")
+
             population = sorted(population, key=lambda x: x.fitness)
-            # print('Fitness After-----', population[0].fitness)
 
             if population[0].fitness <= 0:
                 ifFound = True
@@ -351,8 +314,22 @@ def create_Time_Table(request):
 
         print('SELECTED GENERATION ')
         data = []
-        for ch in population[0].chromosome:
-            n_data = {"Name": ch["Name"], "Professor":ch["Professor"].name, "TimeSlot":ch["Assigned-timeSlot"],"Room":ch["roomAlotted"].room}
-            data.append(n_data)
+        acheivedFitness = population[0].fitness
+        achivedPopulation = []
+        count=0
+        for pop in population:
+            count+=1
+            if pop.fitness == acheivedFitness:
+                achivedPopulation.append(pop)
+            else:
+                break
+            if count>=5:
+                break
+        for i in range(0,len(achivedPopulation),+1):
+            options = []
+            for ch in achivedPopulation[i].chromosome:
+                n_data = {"Name": ch["Name"], "Professor":ch["Professor"].name, "TimeSlot":ch["Assigned-timeSlot"],"Room":ch["roomAlotted"].room}
+                options.append(n_data)
+            data.append(options)
     
-        return render(request, 'Alert.html',{'data': data})
+        return render(request, 'showtimetable.html',{'data': data})

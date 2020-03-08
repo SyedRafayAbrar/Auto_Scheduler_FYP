@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block content %}
+{%if alert%}
+<script>alert({alert})</script>
+{%endif%}
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Time Tables</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">General Form</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+      {%for d in data%}
+         <!-- Main content -->
+         <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Time Table Option</h3>
+              </div>
+<div class="card-body table-responsive p-0">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+
+                      <th>Professor name</th>
+                      <th>Course</th>
+                      <th>Assigned Room</th>
+                      <th>Assigned Time</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for opt in d %}
+                    <tr>
+
+                      <td>{{opt.Professor}}</td>
+                      <td>{{opt.Name}}</td>
+                      <td>{{opt.Room}}</td>
+                      <td>{{opt.TimeSlot}}</td>
+                    </tr>
+                  {%endfor%}
+
+                  </tbody>
+                </table>
+              </div>
+
+    <!-- /.content -->
+  </div>
+  </div>
+  </div>
+
+
+    {%endfor%}
+
+  </div>
+
+
+
+  <!-- /.content-wrapper -->
+  <footer class="main-footer">
+    <div class="float-right d-none d-sm-block">
+      <b>Version</b> 3.0.2-pre
+    </div>
+    <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong> All rights
+    reserved.
+  </footer>
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js" defer></script>
+
+<script>
+   $(document).ready(function() {
+    //Initialize Select2 Elements
+    $('.select2').select2()
+
+    //Initialize Select2 Elements
+    $('.select2bs4').select2({
+      theme: 'bootstrap4'
+    })
+
+  })
+</script>
+
+{% endblock %}

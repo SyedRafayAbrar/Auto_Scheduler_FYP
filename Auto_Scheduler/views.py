@@ -368,10 +368,6 @@ def addCourse(request):
         else:
             messages.error(request,"Something went wrong")
             return redirect("scheduler-course")
-# class TimeView(viewsets.ModelViewSet):
-#     queryset = Time.objects.all()
-#     serializer_class = TimeSerializer
 
-# class DayView(viewsets.ModelViewSet):
-#     queryset = Days.objects.all()
-#     serializer_class = DaySerializer
+def showTable(request):
+    return render(request,'showtimetable.html')

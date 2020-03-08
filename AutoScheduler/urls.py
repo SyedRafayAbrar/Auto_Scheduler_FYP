@@ -40,5 +40,6 @@ urlpatterns = [
     path('addCourse', views.addCourse, name='scheduler-addcourse'),
     path('ViewsCollection/deleteCourse', DeleteCourseView.deleteCourse, name='scheduler-deletecourse'),
     path('api/',include('Auto_Scheduler.api.urls')),
+    path('show_table',views.showTable,name='scheduler-showtable'),
     path('create_Time_Table', Algorithm.create_Time_Table, name='scheduler-createTable'),
 ]
