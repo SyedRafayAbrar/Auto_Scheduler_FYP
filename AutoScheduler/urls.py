@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from Auto_Scheduler import views
-from Auto_Scheduler.ViewsCollection import DeleteCourseView,AddSemester,Algorithm
+from Auto_Scheduler.ViewsCollection import SemesterView,Algorithm,ProfessorView,CourseView,RoomView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,14 +31,24 @@ urlpatterns = [
     path('day', views.day,name='scheduler-days'),
     path('courses', views.course,name='scheduler-course'),
     path('semester', views.semester,name='scheduler-semester'),
-    path('addRoom',views.addRoom,name='scheduler-addroom'),#add_Time
+
+    path('addRoom',RoomView.addRoom,name='scheduler-addroom'),#add_Time
+    path('delete_Room',RoomView.delete_Room,name='scheduler-deleteRoom'),
+
     path('addDay',views.addDay,name='scheduler-addDay'),#adddDay
     path('add_Time',views.add_Time,name='scheduler-addTime'),
     path('createTable',views.createTable,name='scheduler-createtable'),
-    path('add_Professor',views.add_Professor,name='scheduler-addProfessor'),
-    path('add_Semester',AddSemester.add_Semester,name='scheduler-addSemester'),
-    path('addCourse', views.addCourse, name='scheduler-addcourse'),
-    path('ViewsCollection/deleteCourse', DeleteCourseView.deleteCourse, name='scheduler-deletecourse'),
+
+    # PROFESSOR
+    path('add_Professor',ProfessorView.add_Professor,name='scheduler-addProfessor'),
+    path('del_Professor',ProfessorView.delete_Professor,name='scheduler-deleteProfessor'),
+
+    path('add_Semester',SemesterView.add_Semester,name='scheduler-addSemester'),
+    path('del_Semester',SemesterView.delete_Semester,name='scheduler-addSemester'),
+
+    path('addCourse', CourseView.addCourse, name='scheduler-addcourse'),
+    path('deleteCourse', CourseView.deleteCourse, name='scheduler-deletecourse'),
+
     path('api/',include('Auto_Scheduler.api.urls')),
     path('show_table',views.showTable,name='scheduler-showtable'),
     path('create_Time_Table', Algorithm.create_Time_Table, name='scheduler-createTable'),

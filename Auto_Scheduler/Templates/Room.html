@@ -86,6 +86,7 @@
                       <th>Name</th>
                       <th>Capicty</th>
                       <th>Room Type</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -100,7 +101,15 @@
                       {%else%}
                       <td>Room</td>
                       {%endif%}
+                       <td>
+                    <form method="post" action="delete_Room" >
+                          {% csrf_token %}
+                          <input type="hidden" class="form-control" placeholder="" name="delete_btn" value="{{room.id}}">
+                          <button type="submit" class="btn btn-danger" name="">Delete</button>
+                        </form>
+                  </td>
                     </tr>
+
                   {%endfor%}
 
                   </tbody>

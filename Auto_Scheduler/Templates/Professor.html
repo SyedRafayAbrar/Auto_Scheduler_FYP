@@ -124,6 +124,14 @@
                       <td>{{prof.professor_name}}</td>
                       <td>{{prof.professor_email}}</td>
                       <td>{{prof.availability}}</td>
+                      <td>
+                        <form method="post" action="del_Professor" >
+                          {% csrf_token %}
+                          <input type="hidden" class="form-control" placeholder="" name="delete_btn" value="{{prof.professor_id}}">
+                          <button type="submit" class="btn btn-danger" name="">Delete</button>
+                        </form>
+
+                      </td>
                     </tr>
                   {%endfor%}
 

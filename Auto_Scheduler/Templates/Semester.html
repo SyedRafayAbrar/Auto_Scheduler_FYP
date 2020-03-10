@@ -97,6 +97,13 @@
                             {%endfor%}
 
                       </td>
+                   <td>
+                    <form method="post" action="del_Semester" >
+                          {% csrf_token %}
+                          <input type="hidden" class="form-control" placeholder="" name="delete_btn" value="{{semester.semester_id}}">
+                          <button type="submit" class="btn btn-danger" name="">Delete</button>
+                        </form>
+                  </td>
                     </tr>
                   {%endfor%}
 

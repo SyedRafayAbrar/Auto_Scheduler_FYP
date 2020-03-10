@@ -35,5 +35,16 @@ def add_Semester(request):
             messages.success(request,'The Semester is Added')
             return redirect("scheduler-semester")
 
-        return redirect("scheduler-home")
+        return redirect("scheduler-semester")
 
+def delete_Semester(request):
+    if request.method == "POST":
+        semester_id = request.POST.get('delete_btn')
+        semesterObj = Semester.objects.filter(id=semester_id).last()
+        try:
+            semesterObj.delete()
+            messages.success(request, 'The Semester is deleted')
+            return redirect("scheduler-semester")
+        except:
+            messages.error(request, 'Semester Cant be Delete')
+            return redirect("scheduler-semester")

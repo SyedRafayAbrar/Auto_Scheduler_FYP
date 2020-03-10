@@ -111,7 +111,7 @@
                       <td>{{course.course_capacity}}</td>
                       <td>{{course.professors}}</td>
                       <td>
-                        <form method="post" action="ViewsCollection/deleteCourse" >
+                        <form method="post" action="deleteCourse" >
                           {% csrf_token %}
                           <input type="hidden" class="form-control" placeholder="" name="delete_btn" value="{{course.Course_id}}">
                           <button type="submit" class="btn btn-danger" name="">Delete</button>

@@ -207,33 +207,7 @@ def addDay(request):
 
         else:
             return Response({'message': 'Wrong Format'})
-def addRoom(request):
-    if request.method == "POST":
-        
-        roomname = request.POST.get('room_name')
-        room_capacity = request.POST.get('room_capacity')
-        isLab = False
-        isPhysicsLab = False
-        if request.POST.get('physicslab_switch'):
-            isPhysicsLab = True
-        else:
-            isPhysicsLab = False
 
-        if request.POST.get('lab_switch'):
-            isLab = True
-        newData = {"room_name": roomname, "room_capacity": room_capacity,"islab":isLab,"is_physics_lab":isPhysicsLab}
-
-        serializer = serializers.RoomSerializer(data=newData)
-        if serializer.is_valid():
-            try:
-                serializer.save()
-                messages.success(request,'The room is created')
-                return redirect("scheduler-room")
-            except:
-                return redirect("scheduler-room")
-        else:
-            messages.error(request,'Something went wrong')
-            return redirect("scheduler-room")
 
 def add_Time(request):
     if request.method == "POST":
@@ -254,120 +228,7 @@ def add_Time(request):
             except:
                 return redirect("scheduler-periods")
 
-def add_Professor(request):
-    if request.method == "POST":
 
-        avail = request.POST.getlist('select_time')
-        prof = request.POST.get('name')
-        email = request.POST.get('email')
-        permanant_switch = request.POST.get('permanant_switch')
-        if len(Day_Time.objects.all()) == 0:
-            messages.error(request,'Please Add Day and Time First')
-            return redirect("scheduler-professor")
-            
-        isPermanant = False
-        if permanant_switch:
-            isPermanant = True
-
-        data = {"professor_name":prof,"professor_email":email,"isPermanant":isPermanant}
-        serializer = serializers.ProfessorSerializer(data=data)
-        if serializer.is_valid():
-            try:
-                serializer.save()
-            except:
-                return redirect("scheduler-professor")
-
-        else:
-            return redirect("scheduler-professor")
-
-        prof_obj = Professors.objects.all().last()
-        if not isPermanant:
-            for i in avail:
-            
-                obj = Day_Time.objects.filter(day_time=i)
-                n_newData = {}
-                for j in obj:
-                    n_newData = {"prof": prof_obj.id, "day_time": j.id}
-
-                n_serializer = serializers.Day_Time_prof_Serializer(data=n_newData)
-                if n_serializer.is_valid():
-                    try:
-                        n_serializer.save()
-
-                    except:
-
-                        return redirect("scheduler-professor")
-
-                else:
-                    return redirect("scheduler-professor")
-        else:
-            objects = Day_Time.objects.all()
-            for obj in objects:
-                n_newData = {"prof": prof_obj.id, "day_time": obj.id}
-                n_serializer = serializers.Day_Time_prof_Serializer(data=n_newData)
-                if n_serializer.is_valid():
-                    try:
-                        n_serializer.save()
-
-                    except:
-                        messages.error(request, 'Some error')
-                        return redirect("scheduler-professor")
-
-                else:
-                    messages.error(request, 'The Professor is not added')
-                    return redirect("scheduler-professor")
-
-        if len(Day_Time_Professor.objects.filter(prof=prof_obj.id)) > 0:
-            messages.success(request,'The Professor is added')
-            return redirect("scheduler-professor")
-
-        return redirect("scheduler-professor")
-
-
-def addCourse(request):
-    if request.method == "POST":
-
-        profs = request.POST.getlist('select_prof')
-        code = request.POST.get('course_code')
-        name = request.POST.get('course_name')
-        capacity = request.POST.get('course_capacity')
-        is_computer_lab = request.POST.get('computer_switch') if request.POST.get('computer_switch') == True else False
-        is_physics_lab = request.POST.get('physics_switch') if request.POST.get('physics_switch') == True else False
-
-        data = {"course_code":code,"course_name":name,"course_capacity":capacity,"course_isLab":is_computer_lab,"course_isPhysics_Lab":is_physics_lab}
-        serializer = serializers.CourseSerializer(data=data)
-        if serializer.is_valid():
-            try:
-                serializer.save()
-
-            except:
-                messages.error(request,"Error in saving Course")
-                return redirect("scheduler-course")
-        else:
-            messages.error(request, "Error in Data")
-            return redirect("scheduler-course")
-        courseObj = Courses.objects.all().last()
-
-        for professor in profs:
-            obj = Professors.objects.filter(professor_name=professor)
-
-            for j in obj:
-                n_newData = {"prof": j.id, "course": courseObj.id}
-                n_serializer = serializers.Course_ProfessorSerializer(data=n_newData)
-                if n_serializer.is_valid():
-                    try:
-                        n_serializer.save()
-                    except:
-                        courseObj.delete()
-                        messages.error(request,"Error in Adding Course")
-                        return redirect("scheduler-course")
-
-        if len(Courses_Professor.objects.filter(course=courseObj.id)) > 0:
-            messages.success(request,"Course Added")
-            return redirect("scheduler-course")
-        else:
-            messages.error(request,"Something went wrong")
-            return redirect("scheduler-course")
 
 def showTable(request):
     return render(request,'showtimetable.html')
