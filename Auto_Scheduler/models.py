@@ -105,7 +105,7 @@ class Semester_Courses(models.Model):
 
 class Module(models.Model):
     id = models.AutoField(primary_key=True)
-    date_time = models.DateTimeField(default=datetime.datetime.now())
+    date_time = models.DateTimeField(default=None)
 
     class Meta:
         db_table = "Module"
@@ -120,3 +120,21 @@ class Courses_Module(models.Model):
 
     class Meta:
         db_table = "Courses_Module"
+
+class Temp_Module(models.Model):
+    id = models.AutoField(primary_key=True)
+    date_time = models.DateTimeField(default=None)
+
+    class Meta:
+        db_table = "Temp_Module"
+
+class Temp_Courses_Module(models.Model):
+    id = models.AutoField(primary_key=True)
+    module = models.ForeignKey(Temp_Module,on_delete=models.CASCADE,default=None)
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE, default=None)
+    selectedProfessor = models.ForeignKey(Professors, on_delete=models.CASCADE, default=None)
+    assignedTime = models.ForeignKey(Day_Time, on_delete=models.CASCADE, default=None)
+    assigned_room = models.ForeignKey(Rooms, on_delete=models.CASCADE, default=None)
+
+    class Meta:
+        db_table = "Temp_Courses_Module"

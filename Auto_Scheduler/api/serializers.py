@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from  Auto_Scheduler.models import Languages,Time,Days,Day_Time,Rooms,Day_Time_Professor,Professors,Courses,Courses_Professor,Semester,Semester_Courses
+from  Auto_Scheduler.models import Languages,Time,Days,Day_Time,Rooms,Day_Time_Professor,Professors,Courses,Courses_Professor,Semester,Semester_Courses,Temp_Module,Temp_Courses_Module,Module,Courses_Module
 
 
 class LanguageSerializer(serializers.ModelSerializer):
@@ -62,3 +62,23 @@ class Semester_Course_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Semester_Courses
         fields = ('semester','Course','selected_Professor')
+
+class Temp_Module_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Temp_Module
+        fields = "__all__"
+
+class Temp__Courses_Module_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Temp_Courses_Module
+        fields = ('module', 'course', 'selectedProfessor','assignedTime','assigned_room')
+
+class Module_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Module
+        fields = "__all__"
+
+class Courses_Module_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Courses_Module
+        fields = ('module', 'course', 'selectedProfessor','assignedTime','assigned_room')

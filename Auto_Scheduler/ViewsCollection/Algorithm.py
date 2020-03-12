@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
+import datetime
 from django.contrib import messages
+
 from Auto_Scheduler.api import serializers
 from Auto_Scheduler.com.Classes import Room,Professor
-from Auto_Scheduler.models import Rooms,Professors,Semester,Day_Time,Semester_Courses,Day_Time_Professor
+from Auto_Scheduler.models import Rooms,Professors,Semester,Day_Time,Semester_Courses,Day_Time_Professor,Temp_Module,Temp_Courses_Module
 import random
 from random import randint,randrange
 
@@ -210,7 +212,7 @@ def create_Time_Table(request):
                 lab = True
                 isLabsAvailable = True
                 
-            roomCollection.append(Room.Room(room.room_name,room.room_capacity,lab,p_lab))
+            roomCollection.append(Room.Room(room.room_name,room.room_capacity,lab,p_lab,room.id))
 
 
 
@@ -263,7 +265,7 @@ def create_Time_Table(request):
                 profe = Professor.Professor(_id,name,avail,"",0,[])
                 # messages.error(request, avail)
                 # return redirect("scheduler-createtable")
-                temp = {"Name": course.Course.course_name,"Professor":profe,"Capacity":course.Course.course_capacity,"Assigned-timeSlot": "", "Available_TimeSlots": [],"roomAlotted": None, "isLab": course.Course.course_isLab,"isPhysics_Lab":course.Course.course_isPhysics_Lab}
+                temp = {"course_id":course.Course.id,"Name": course.Course.course_name,"Professor":profe,"Capacity":course.Course.course_capacity,"Assigned-timeSlot": "", "Available_TimeSlots": [],"roomAlotted": None, "isLab": course.Course.course_isLab,"isPhysics_Lab":course.Course.course_isPhysics_Lab}
                 COURSES.append(temp)
 
         GENES = COURSES
@@ -325,11 +327,38 @@ def create_Time_Table(request):
                 break
             if count>=5:
                 break
+
+
+        # ('module', 'course', 'selectedProfessor', 'assignedTime', 'assigned_room')
         for i in range(0,len(achivedPopulation),+1):
-            options = []
+
+            _serializers = serializers.Temp_Module_Serializer(data={'date_time': datetime.datetime.now()})
+            if _serializers.is_valid():
+                _serializers.save()
+            else:
+                messages.error(request, 'Invalid Temp')
+                return redirect('scheduler-home')
+
+            mod = Temp_Module.objects.all().last()
             for ch in achivedPopulation[i].chromosome:
-                n_data = {"Name": ch["Name"], "Professor":ch["Professor"].name, "TimeSlot":ch["Assigned-timeSlot"],"Room":ch["roomAlotted"].room}
-                options.append(n_data)
-            data.append(options)
+                day_time = Day_Time.objects.filter(day_time=ch["Assigned-timeSlot"]).last()
+                n_data = {"module":mod.id,"course":ch["course_id"], "selectedProfessor":ch["Professor"].id, "assignedTime":day_time.id,"assigned_room":ch["roomAlotted"].id}
+                # messages.error(request, n_data)
+                # return redirect('scheduler-home')
+                new_serializers = serializers.Temp__Courses_Module_Serializer(data=n_data)
+
+                if new_serializers.is_valid():
+                    try:
+                        new_serializers.save()
+                    except:
+                        mod.delete()
+                        messages.error(request, 'Please Invalid data')
+                        return redirect('scheduler-home')
+                else:
+                    messages.error(request, 'Please Invalid data')
+                    return redirect('scheduler-home')
+
+                # options.append(n_data)
+            # data.append(options)
     
-        return render(request, 'showtimetable.html',{'data': data})
+        return redirect('scheduler-showtable')

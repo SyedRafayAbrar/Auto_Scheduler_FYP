@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from Auto_Scheduler.Forms import UserForm
 from Auto_Scheduler.api import serializers
+import datetime
 from django.contrib import messages
-from .models import  Users,Languages, Time,Days,Day_Time,Rooms,Professors,Courses,Day_Time_Professor,Courses_Professor,Semester,Semester_Courses
+from .models import  Users,Languages, Time,Days,Day_Time,Rooms,Professors,Courses,Day_Time_Professor,Courses_Professor,Semester,Semester_Courses,Temp_Module,Temp_Courses_Module,Module,Courses_Module
 
 
 from Auto_Scheduler.models import Users
@@ -231,4 +232,47 @@ def add_Time(request):
 
 
 def showTable(request):
-    return render(request,'showtimetable.html')
+
+    data = []
+    t_Module = Temp_Module.objects.all()
+    for mod in t_Module:
+        mods = Temp_Courses_Module.objects.filter(module=mod.id)
+        n_data = {'Module_id':mod.id,'Module_data':mods}
+        data.append(n_data)
+
+    return render(request,'showtimetable.html',{'data':data})
+
+def saveTimetable(request):
+    if request.method == "POST":
+        moduleID = request.POST.get('r1')
+        _serializers = serializers.Module_Serializer(data={'date_time': datetime.datetime.now()})
+        if _serializers.is_valid():
+            _serializers.save()
+        else:
+            messages.error(request, 'Invalid Temp')
+            return redirect('scheduler-home')
+        current_mod = Module.objects.all().last()
+        module = Temp_Courses_Module.objects.filter(module=moduleID)
+        for mod in module:
+            n_data = {"module":current_mod.id,"course":mod.course.id, "selectedProfessor":mod.selectedProfessor.id, "assignedTime":mod.assignedTime.id,"assigned_room":mod.assigned_room.id}
+            new_serializers = serializers.Courses_Module_Serializer(data=n_data)
+
+            if new_serializers.is_valid():
+                try:
+                    new_serializers.save()
+                except:
+                    current_mod.delete()
+                    messages.error(request, 'Please Invalid data')
+                    return redirect('scheduler-showtable')
+            else:
+                messages.error(request, 'Please Invalid data')
+                return redirect('scheduler-showtable')
+
+        if len(Courses_Module.objects.filter(module=current_mod.id))>0:
+            # messages.success(request, 'Done')
+            temp = Temp_Module.objects.all().last()
+            temp.delete()
+            return redirect('scheduler-home')
+        else:
+            messages.error(request, 'Please Invalid')
+            return redirect('scheduler-showtable')

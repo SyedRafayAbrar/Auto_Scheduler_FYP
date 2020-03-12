@@ -51,5 +51,6 @@ urlpatterns = [
 
     path('api/',include('Auto_Scheduler.api.urls')),
     path('show_table',views.showTable,name='scheduler-showtable'),
+    path('selectTimetable',views.saveTimetable,name='scheduler-saveTimetable'),
     path('create_Time_Table', Algorithm.create_Time_Table, name='scheduler-createTable'),
 ]

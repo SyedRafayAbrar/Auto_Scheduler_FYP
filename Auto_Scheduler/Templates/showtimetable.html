@@ -21,9 +21,11 @@
         </div>
       </div><!-- /.container-fluid -->
     </section>
-
+<form method="post" action="selectTimetable">
+    {% csrf_token %}
       {%for d in data%}
          <!-- Main content -->
+
          <div class="row">
           <div class="col-12">
             <div class="card">
@@ -34,22 +36,30 @@
                 <table class="table table-hover">
                   <thead>
                     <tr>
-
+                      <th>
+                        <tr>
+                       <td>
+                        <div class="icheck-primary d-inline">
+                            <input type="radio" id="{{d.Module_id}}" value="{{d.Module_id}}" name="r1">
+                            <label for="{{d.Module_id}}">
+                            </label>
+                          </div>
+                      </td>
+                      </th>
                       <th>Professor name</th>
                       <th>Course</th>
                       <th>Assigned Room</th>
                       <th>Assigned Time</th>
-                      <th></th>
+
                     </tr>
                   </thead>
                   <tbody>
-                  {% for opt in d %}
-                    <tr>
-
-                      <td>{{opt.Professor}}</td>
-                      <td>{{opt.Name}}</td>
-                      <td>{{opt.Room}}</td>
-                      <td>{{opt.TimeSlot}}</td>
+                  {% for opt in d.Module_data %}
+                      <td></td>
+                      <td>{{opt.selectedProfessor.professor_name}}</td>
+                      <td>{{opt.course.course_name}}</td>
+                      <td>{{opt.assigned_room.room_name}}</td>
+                      <td>{{opt.assignedTime.day_time}}</td>
                     </tr>
                   {%endfor%}
 
@@ -64,6 +74,8 @@
 
 
     {%endfor%}
+      <button type="submit" class="btn btn-block bg-gradient-info btn-lg">Submit</button>
+        </form>
 
   </div>
 
