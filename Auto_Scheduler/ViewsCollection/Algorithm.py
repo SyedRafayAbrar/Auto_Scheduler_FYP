@@ -185,7 +185,9 @@ def create_Time_Table(request):
         global LABS
         global ROOMS
         selected_id = request.POST.get('r1')
-
+        if selected_id == None:
+            messages.error(request, "No Semester Selected")
+            return redirect("scheduler-createtable")
         meetingsperweek = 1
         prevFitness = 10
         COURSES = []
@@ -319,14 +321,18 @@ def create_Time_Table(request):
         acheivedFitness = population[0].fitness
         achivedPopulation = []
         count=0
-        for pop in population:
-            count+=1
-            if pop.fitness == acheivedFitness:
-                achivedPopulation.append(pop)
-            else:
-                break
-            if count>=5:
-                break
+        if generation == 1:
+            achivedPopulation.append(population[0])
+        else:
+
+            for pop in range(0,5,+1):
+                count+=1
+                if population[pop].fitness == acheivedFitness:
+                    achivedPopulation.append(population[pop])
+                else:
+                    break
+                if count>=4:
+                    break
 
 
         # ('module', 'course', 'selectedProfessor', 'assignedTime', 'assigned_room')
