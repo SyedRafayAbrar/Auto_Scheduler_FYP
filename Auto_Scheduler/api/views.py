@@ -6,9 +6,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from . import serializers
 from Auto_Scheduler.Forms import TimeForm
+from . import ResponseJSON
 
-from Auto_Scheduler.api.serializers import LanguageSerializer,TimeSerializer,DaySerializer,ProfessorSerializer,ShowProfessorSerializer,Day_Time_prof_Serializer,Course_ProfessorSerializer
-from Auto_Scheduler.models import Languages, Time,Days,Day_Time,Rooms,Professors,Day_Time_Professor,Courses_Professor,Courses
+from Auto_Scheduler.api.serializers import LanguageSerializer,TimeSerializer,DaySerializer,Semester_Serializer,Semester_Course_Serializer
+from Auto_Scheduler.models import Languages, Time,Days,Day_Time,Rooms,Professors,Day_Time_Professor,Courses_Professor,Courses,Semester,Semester_Courses
 
 
 from Auto_Scheduler.models import Users
@@ -17,6 +18,7 @@ from Auto_Scheduler.models import Users
 def user(request):
     if request.method == "POST":
         form = UserForm(request.POST)
+
         if form.is_valid():
             try:
                 form.save()
@@ -85,7 +87,7 @@ class professor_view(APIView):
 
             newdata = {'professor_id':prof.id,'professor_name':prof.professor_name,'professor_email':prof.professor_email,'availability':avail}
             data.append(newdata)
-        return Response({'data': data})
+        return Response(ResponseJSON.ResponseJSON(data,True).getResponseJSON())
 
 
     def post(self, request):
@@ -130,7 +132,7 @@ class LanguageView(APIView):
     def get(self,request):
         language = Languages.objects.all()
         serializer = LanguageSerializer(language, many=True)
-        return Response({'data':serializer.data})
+        return Response(ResponseJSON.ResponseJSON(serializer.data,True).getResponseJSON())
 
     def post(self,request):
         serializer = serializers.LanguageSerializer(data=request.data)
@@ -145,6 +147,15 @@ class LanguageView(APIView):
                 return Response({'message': 'Sorry'})
         else:
             return Response({'message': 'Wrong Format'})
+
+class getCount(APIView):
+    def get(self,request):
+        teacher_count = len(Professors.objects.all())
+        course_count = len(Courses.objects.all())
+        timeslot_count = len(Day_Time.objects.all())
+        rooms_count = len(Rooms.objects.all())
+        n_data = {'teacher_count':teacher_count,'course_count':course_count,'timeslot_count':timeslot_count,'rooms_count':rooms_count}
+        return Response(ResponseJSON.ResponseJSON(n_data,True).getResponseJSON())
 
 class updateLanguage(APIView):
     def post(self,request):
@@ -168,7 +179,7 @@ class DayView(APIView):
     def get(self,request):
         days = Days.objects.all()
         serializer = DaySerializer(days, many=True)
-        return Response({'data':serializer.data})
+        return Response(ResponseJSON.ResponseJSON(serializer.data,True).getResponseJSON())
 
     def post(self,request):
         serializer = serializers.DaySerializer(data=request.data)
@@ -254,7 +265,7 @@ class Room_View(APIView):
     def get(self,request):
         rooms = Rooms.objects.all()
         serializer = serializers.RoomSerializer(rooms, many= True)
-        return Response({'data': serializer.data})
+        return Response(ResponseJSON.ResponseJSON(serializer.data,True).getResponseJSON())
 
     def post(self, request):
         serializer = serializers.RoomSerializer(data=request.data)
@@ -301,7 +312,7 @@ class CoursesView(APIView):
             newdata = {'course_id':c.id,'course_code': c.course_code,'course_name': c.course_name, 'course_capacity': c.course_capacity,
                        'availability': avail}
             data.append(newdata)
-        return Response({'data': data})
+        return Response(ResponseJSON.ResponseJSON(data,True).getResponseJSON())
 
     def post(self,request):
         prof_ass = request.data.get('professors')
@@ -339,9 +350,42 @@ class CoursesView(APIView):
             return Response({'message': 'Done'})
         return Response({'message': 'Sorry once again'})
 
-# class TimeView(viewsets.ModelViewSet):
-#     queryset = Time.objects.all()
-#     serializer_class = TimeSerializer
+
+
+
+class SemesterView(APIView):
+    def post(self,request):
+        courses = request.data.get('select_courses')
+        mpw = request.data.get('meetingsperweek')
+        name = request.data.get('name')
+        newData = {"name": name, "meetings_per_week": mpw}
+        serializer = serializers.Semester_Serializer(data=newData)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return Response(ResponseJSON.Error_ResponseJSON("Something is missing",False))
+
+        seme = Semester.objects.all().last()
+        for id in courses:
+            course_prof = Courses_Professor.objects.filter(id=id)
+            if len(course_prof) > 0:
+                for c_p in course_prof:
+                    course = c_p.course.id
+                    professor = c_p.prof.id
+                    data = {"semester": seme.id, "Course": course, "selected_Professor": professor}
+                    serializer = serializers.Semester_Course_Serializer(data=data)
+                    if serializer.is_valid():
+                        serializer.save()
+
+                    else:
+                        seme.delete()
+                        return Response(ResponseJSON.Error_ResponseJSON("Something went wrong",False))
+
+        if len(Semester_Courses.objects.filter(semester=seme.id)) > 0:
+
+            return Response(ResponseJSON.ResponseJSON(None,True))
+
+        return Response(ResponseJSON.Error_ResponseJSON("Something went wrong", False))
 
 # class DayView(viewsets.ModelViewSet):
 #     queryset = Days.objects.all()

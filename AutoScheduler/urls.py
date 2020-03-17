@@ -22,6 +22,7 @@ from Auto_Scheduler.ViewsCollection import SemesterView,Algorithm,ProfessorView,
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home,name='scheduler-home'),
+    path('register', views.register,name='scheduler-register'),
     path('login', views.login,name='scheduler-login'),
     path('logout', views.logout,name='scheduler-logout'),
     path('loginMethod', views.loginMethod,name='scheduler-loginMethod'),

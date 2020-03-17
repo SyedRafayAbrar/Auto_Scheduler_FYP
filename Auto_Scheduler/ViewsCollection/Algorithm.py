@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 import datetime
 from django.contrib import messages
-
+from rest_framework import viewsets
+from rest_framework.views import APIView
+from Auto_Scheduler.api.ResponseJSON import ResponseJSON,Error_ResponseJSON
+from rest_framework.response import Response
 from Auto_Scheduler.api import serializers
 from Auto_Scheduler.com.Classes import Room,Professor
 from Auto_Scheduler.models import Rooms,Professors,Semester,Day_Time,Semester_Courses,Day_Time_Professor,Temp_Module,Temp_Courses_Module
@@ -368,3 +371,200 @@ def create_Time_Table(request):
             # data.append(options)
     
         return redirect('scheduler-showtable')
+
+
+
+
+
+
+#
+# class Create_Time_Table_API(APIView):
+#     def post(self,request):
+#         global POPULATION_SIZE
+#         global arrayofTime
+#         global GENES
+#         global LABS
+#         global ROOMS
+#         selected_id = request.data.get('selected_id')
+#         if selected_id == None:
+#             messages.error(request, "No Semester Selected")
+#             return redirect("scheduler-createtable")
+#
+#         meetingsperweek = 1
+#         prevFitness = 10
+#         COURSES = []
+#         fitness_Same_Count = 0
+#         ifFound = False
+#         population = []
+#         generation = 1
+#         isLabsAvailable = False
+#         isPhysics_LabsAvailable = False
+#
+#         currentSemester = Semester.objects.filter(id=selected_id).last()
+#         roomCollection = []
+#         rooms = Rooms.objects.all()
+#         day_time = Day_Time.objects.all()
+#
+#         for room in rooms:
+#             p_lab = False
+#             lab = False
+#             if room.is_physics_lab:
+#                 p_lab = True
+#                 isPhysics_LabsAvailable = True
+#
+#             if room.islab:
+#                 lab = True
+#                 isLabsAvailable = True
+#
+#             roomCollection.append(Room.Room(room.room_name, room.room_capacity, lab, p_lab, room.id))
+#
+#         if isPhysics_LabsAvailable == False:
+#             messages.error(request, "No PHYSICS LABS Available")
+#             return redirect("scheduler-createtable")
+#
+#         if isLabsAvailable == False:
+#             messages.error(request, "No LABS Available")
+#             return redirect("scheduler-createtable")
+#
+#         for r in roomCollection:
+#
+#             if r.isLab == True:
+#                 LABS.append(r)
+#             elif r.isPhysicsLab == True:
+#                 PhysicsLAB.append(r)
+#             else:
+#                 ROOMS.append(r)
+#
+#         for d_t in day_time:
+#             arrayofTime.append(d_t.day_time)
+#
+#         meetingsperweek = currentSemester.meetings_per_week
+#         Courses = Semester_Courses.objects.filter(semester=currentSemester.id)
+#
+#         if len(LABS) <= 0:
+#             messages.error(request, "No LABS Available")
+#             return redirect("scheduler-createtable")
+#         if len(PhysicsLAB) <= 0:
+#             messages.error(request, "No PHYSICS LABS Available")
+#             return redirect("scheduler-createtable")
+#         if len(ROOMS) <= 0:
+#             messages.error(request, "No Room Available")
+#             return redirect("scheduler-createtable")
+#
+#         for _ in range(0, meetingsperweek, +1):  # FOR SUMMER SEMESTER
+#             for course in Courses:
+#                 avail = []
+#                 availability = Day_Time_Professor.objects.filter(prof=course.selected_Professor.id)
+#                 for a in availability:
+#                     avail.append(a.day_time.day_time)
+#
+#                 _id = course.selected_Professor.id
+#                 name = course.selected_Professor.professor_name
+#
+#                 profe = Professor.Professor(_id, name, avail, "", 0, [])
+#                 # messages.error(request, avail)
+#                 # return redirect("scheduler-createtable")
+#                 temp = {"course_id": course.Course.id, "Name": course.Course.course_name, "Professor": profe,
+#                         "Capacity": course.Course.course_capacity, "Assigned-timeSlot": "", "Available_TimeSlots": [],
+#                         "roomAlotted": None, "isLab": course.Course.course_isLab,
+#                         "isPhysics_Lab": course.Course.course_isPhysics_Lab}
+#                 COURSES.append(temp)
+#
+#         GENES = COURSES
+#         for _ in range(POPULATION_SIZE):
+#             gnome = Individual.create_gnome()
+#             population.append(Individual(gnome))
+#
+#         while not ifFound:
+#
+#             population = sorted(population, key=lambda x: x.fitness)
+#
+#             if population[0].fitness <= 0:
+#                 ifFound = True
+#                 break
+#             elif population[0].fitness == prevFitness:
+#                 fitness_Same_Count += 1
+#                 if fitness_Same_Count > 40:
+#                     ifFound = True
+#                     break
+#             elif generation >= 100:
+#                 ifFound = True
+#                 break
+#             else:
+#                 prevFitness = population[0].fitness
+#                 fitness_Same_Count = 0
+#
+#             new_generation = []
+#             s = int((10 * POPULATION_SIZE) // 100)
+#             for ch in range(0, s, +1):
+#                 ind = Individual(population[ch].mutation(population[ch].chromosome))
+#                 new_generation.append(ind)
+#
+#             ns = int((90 * POPULATION_SIZE) // 100)
+#
+#             for _ in range(ns):
+#                 rand = randint(s, ns - 1)
+#                 parent1 = population[rand]
+#                 rand = randint(s, ns - 1)
+#                 parent2 = population[rand]
+#
+#                 child = parent1.crossover(parent2)
+#                 new_generation.append(child)
+#
+#             population = new_generation
+#
+#             generation += 1
+#
+#         print('SELECTED GENERATION ')
+#         data = []
+#         acheivedFitness = population[0].fitness
+#         achivedPopulation = []
+#         count = 0
+#         if generation == 1:
+#             achivedPopulation.append(population[0])
+#         else:
+#
+#             for pop in range(0, 5, +1):
+#                 count += 1
+#                 if population[pop].fitness == acheivedFitness:
+#                     achivedPopulation.append(population[pop])
+#                 else:
+#                     break
+#                 if count >= 4:
+#                     break
+#
+#         # ('module', 'course', 'selectedProfessor', 'assignedTime', 'assigned_room')
+#         for i in range(0, len(achivedPopulation), +1):
+#
+#             _serializers = serializers.Temp_Module_Serializer(data={'date_time': datetime.datetime.now()})
+#             if _serializers.is_valid():
+#                 _serializers.save()
+#             else:
+#                 messages.error(request, 'Invalid Temp')
+#                 return redirect('scheduler-home')
+#
+#             mod = Temp_Module.objects.all().last()
+#             for ch in achivedPopulation[i].chromosome:
+#                 day_time = Day_Time.objects.filter(day_time=ch["Assigned-timeSlot"]).last()
+#                 n_data = {"module": mod.id, "course": ch["course_id"], "selectedProfessor": ch["Professor"].id,
+#                           "assignedTime": day_time.id, "assigned_room": ch["roomAlotted"].id}
+#                 # messages.error(request, n_data)
+#                 # return redirect('scheduler-home')
+#                 new_serializers = serializers.Temp__Courses_Module_Serializer(data=n_data)
+#
+#                 if new_serializers.is_valid():
+#                     try:
+#                         new_serializers.save()
+#
+#                     except:
+#                         mod.delete()
+#                         messages.error(request, 'Please Invalid data')
+#                         return redirect('scheduler-home')
+#                 else:
+#                     messages.error(request, 'Please Invalid data')
+#                     return redirect('scheduler-home')
+#
+#                 # options.append(n_data)
+#             # data.append(options)
+#
+#         return redirect('scheduler-showtable')
