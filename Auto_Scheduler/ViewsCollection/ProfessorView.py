@@ -15,6 +15,10 @@ def add_Professor(request):
             messages.error(request, 'Please Add Day and Time First')
             return redirect("scheduler-professor")
 
+        if len(Professors.objects.filter(professor_name=prof)) > 0:
+            messages.error(request, 'Professor exist')
+            return redirect("scheduler-professor")
+
         isPermanant = False
         if permanant_switch:
             isPermanant = True
@@ -35,10 +39,10 @@ def process_Professor(data,isPermanant,avail):
         try:
             serializer.save()
         except:
-            return redirect("scheduler-professor")
+            return {"isError": True, "message": 'The Professor is cannot be added'}
 
     else:
-        return redirect("scheduler-professor")
+        return {"isError": True, "message": 'The Professor is cannot be added'}
 
     prof_obj = Professors.objects.all().last()
     if not isPermanant:

@@ -20,18 +20,25 @@ def addRoom(request):
             isLab = True
         newData = {"room_name": roomname, "room_capacity": room_capacity, "islab": isLab,
                    "is_physics_lab": isPhysicsLab}
-
-        serializer = serializers.RoomSerializer(data=newData)
-        if serializer.is_valid():
-            try:
-                serializer.save()
-                messages.success(request, 'The room is created')
-                return redirect("scheduler-room")
-            except:
-                return redirect("scheduler-room")
-        else:
-            messages.error(request, 'Something went wrong')
+        response = processRoom(newData)
+        if response["isError"]:
+            messages.error(request, response["message"])
             return redirect("scheduler-room")
+        else:
+            messages.success(request, 'The Room is added')
+            return redirect("scheduler-room")
+
+def processRoom(newData):
+    serializer = serializers.RoomSerializer(data=newData)
+    if serializer.is_valid():
+        try:
+            serializer.save()
+            return {"isError":False,"message":"Room is Created"}
+
+        except:
+            return {"isError":True,"message":"Some thing went wrong"}
+    else:
+        return {"isError":True,"message":"Invalid Serialization"}
 
 def delete_Room(request):
     if request.method == "POST":
