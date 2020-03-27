@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from Auto_Scheduler.Forms import UserForm
+import csv, io
 from Auto_Scheduler.api import serializers
 import datetime
 from django.contrib import messages
@@ -23,6 +24,8 @@ def logout(request):
       return redirect("scheduler-login")
     except:
       pass
+
+
 
 def loginMethod(request):
     if request.method == "POST":
@@ -114,6 +117,10 @@ def semester(request):
         s_data = s_c.course.course_name+"-"+s_c.prof.professor_name
         courses_data.append({"str":s_data,"id":s_c.id})
     return render(request, 'Semester.html', {'Semesters': semester_data,"data":courses_data})
+
+def showFile(request):
+
+    return render(request,'ShowFile.html')
 
 
 def professor(request):
