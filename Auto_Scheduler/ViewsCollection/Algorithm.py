@@ -148,15 +148,24 @@ class Individual(object):
         mutatedChromosome = chromosome
 
         global ROOMS,LABS,physicsLab
-        rand = randrange(0,len(mutatedChromosome)+1,1)
+        # rand = randrange(0,len(mutatedChromosome)+1,1)
+        rand = randint(0, len(mutatedChromosome)-1)
+        firstGene = mutatedChromosome[rand]
+        rand = randint(0, len(mutatedChromosome)-1)
+        secondGene = mutatedChromosome[rand]
+
+        temp = firstGene["Assigned-timeSlot"]
+        firstGene["Assigned-timeSlot"] = secondGene["Assigned-timeSlot"]
+        secondGene["Assigned-timeSlot"] = temp
+
         for gene in range(0, len(mutatedChromosome), +1):
-            if gene == rand:
-                mutatedChromosome[gene]["Assigned-timeSlot"] = random.choice(mutatedChromosome[gene]["Available_TimeSlots"])
-                isFound = False
-                while isFound:
-                    rand = randrange(0,len(mutatedChromosome)+1,1)
-                    if rand != gene:
-                        isFound = True
+            # if gene == rand:
+        #         mutatedChromosome[gene]["Assigned-timeSlot"] = random.choice(mutatedChromosome[gene]["Available_TimeSlots"])
+        #         isFound = False
+        #         while isFound:
+        #             rand = randrange(0,len(mutatedChromosome)+1,1)
+        #             if rand != gene:
+        #                 isFound = True
 
 
 
