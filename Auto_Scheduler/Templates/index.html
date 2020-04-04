@@ -42,7 +42,7 @@
               <div class="icon">
                 <i class="ion ion-person"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{% url 'scheduler-professor' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -57,7 +57,7 @@
               <div class="icon">
                 <i class="ion ion-chair"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{% url 'scheduler-room' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -72,7 +72,7 @@
               <div class="icon">
                 <i class="ion ion-ios-book"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{% url 'scheduler-course' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -87,7 +87,7 @@
               <div class="icon">
                 <i class="ion ion-clock"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+<!--              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>-->
             </div>
           </div>
           <!-- ./col -->
@@ -107,31 +107,34 @@
           </div>
 
         <br>
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
         <div class="card-body table-responsive p-0">
                 <table class="table table-hover">
                   <thead>
                     <tr>
-                      <th>ID</th>
-                      <th>Course name</th>
-                      <th>Course Code</th>
-                      <th>Course Capacity</th>
-                      <th>Professor Assigned</th>
+
+                      <th>Semester name</th>
+                      <th>Created at Code</th>
+                      <th>Classes per week</th>
+                      <th>Total Courses</th>
                       <th></th>
                     </tr>
                   </thead>
                   <tbody>
-                  {% for course in data %}
+                  {% for semester in data %}
                     <tr>
-                      <td>{{course.course_id}}</td>
-                      <td>{{course.course_name}}</td>
-                      <td>{{course.course_code}}</td>
-                      <td>{{course.course_capacity}}</td>
-                      <td>{{course.professors}}</td>
+
+                      <td>{{semester.semester.name}}</td>
+                      <td>{{semester.date_time.}}</td>
+                      <td>{{semester.semester.meetings_per_week}}</td>
+                      <td>{{semester.courses}}</td>
                       <td>
-                        <form method="post" action="ViewsCollection/deleteCourse" >
+                        <form method="post" action="view_timetable" >
                           {% csrf_token %}
-                          <input type="hidden" class="form-control" placeholder="" name="delete_btn" value="{{course.Course_id}}">
-                          <button type="submit" class="btn btn-danger" name="">Delete</button>
+                          <input type="hidden" class="form-control" placeholder="" name="mod_id" value="{{semester.mod_id}}">
+                          <button type="submit" class="btn btn-success" name="">View</button>
                         </form>
 
                       </td>
@@ -144,6 +147,7 @@
               </div>
         <!-- /.row (main row) -->
       </div><!-- /.container-fluid -->
+          </div></div></div>
     </section>
     <!-- /.content -->
   </div>

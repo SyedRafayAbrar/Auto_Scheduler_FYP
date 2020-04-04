@@ -17,13 +17,14 @@ from django.contrib import admin
 from django.urls import path, include
 
 from Auto_Scheduler import views
-from Auto_Scheduler.ViewsCollection import SemesterView,Algorithm,ProfessorView,CourseView,RoomView,SelecetFile
+from Auto_Scheduler.ViewsCollection import SemesterView,Algorithm,ProfessorView,CourseView,RoomView,SelecetFile,TimeTable_View
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home,name='scheduler-home'),
     path('register', views.register,name='scheduler-register'),
     path('login', views.login,name='scheduler-login'),
+
     path('logout', views.logout,name='scheduler-logout'),
     path('loginMethod', views.loginMethod,name='scheduler-loginMethod'),
     path('professor', views.professor,name='scheduler-professor'),
@@ -57,4 +58,9 @@ urlpatterns = [
 
     path('showfile', views.showFile, name='scheduler-showFile'),
     path('selectfile', SelecetFile.selectFile, name='scheduler-selectfile'),
+
+    path('timetable', TimeTable_View.TimeTableView, name='scheduler-timetableview'),
+    path('view_timetable', TimeTable_View.ViewTimeTable, name='scheduler-viewtimetableview'),
+
+
 ]

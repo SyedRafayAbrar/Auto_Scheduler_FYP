@@ -1,5 +1,5 @@
 from django.urls import path, include
-from Auto_Scheduler.api.views import LanguageView, updateLanguage,DayView,TimeView,Time_DayView,Delete_Room,Delete_Time_Day,Room_View, professor_view,CoursesView,getCount
+from Auto_Scheduler.api.views import LanguageView, updateLanguage,DayView,TimeView,Time_DayView,Delete_Room,Delete_Time_Day,Room_View, professor_view,CoursesView,getCount,register
 from rest_framework import routers
 from rest_framework.urlpatterns import format_suffix_patterns
 
@@ -21,6 +21,7 @@ urlpatterns = [
     path(r'delete_room', Delete_Room.as_view()),
     path(r'professors', professor_view.as_view()),
     path(r'courses', CoursesView.as_view()),
+    path(r'register', register.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

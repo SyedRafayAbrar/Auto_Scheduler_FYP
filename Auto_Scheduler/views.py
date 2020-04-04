@@ -98,8 +98,15 @@ def home(request):
     roomCount = len(Rooms.objects.all())
     coursesCount = len(Courses.objects.all())
     timeSlots = len(Day_Time.objects.all())
-    style = "hold-transition sidebar-mini layout-fixed"
-    return render(request, 'index.html', {'lectureCount': lecturerCount, 'roomCount':roomCount, 'courseCount':coursesCount,'timeSlots':timeSlots})
+
+    modules = Module.objects.all()
+    semsters = []
+    for mod in modules:
+        courses = Courses_Module.objects.filter(module=mod.id)
+        semester = {'mod_id':mod.id,'semester':mod.semester,'date_time':mod.date_time,'courses':len(courses)}
+        semsters.append(semester)
+
+    return render(request, 'index.html', {'lectureCount': lecturerCount, 'roomCount':roomCount, 'courseCount':coursesCount,'timeSlots':timeSlots,'data':semsters})
 
 def semester(request):
 
@@ -257,11 +264,12 @@ def showTable(request):
 def saveTimetable(request):
     if request.method == "POST":
         moduleID = request.POST.get('r1')
-        _serializers = serializers.Module_Serializer(data={'date_time': datetime.datetime.now()})
+        tempModule = Temp_Module.objects.filter(id=moduleID).last()
+        _serializers = serializers.Module_Serializer(data={'date_time': datetime.datetime.now(),'semester':tempModule.semester.id})
         if _serializers.is_valid():
             _serializers.save()
         else:
-            messages.error(request, 'Invalid Temp')
+            messages.error(request, 'Invalid Temp'+tempModule.semester.id)
             return redirect('scheduler-home')
         current_mod = Module.objects.all().last()
         module = Temp_Courses_Module.objects.filter(module=moduleID)

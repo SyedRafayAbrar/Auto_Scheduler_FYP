@@ -1,0 +1,3 @@
+
+ContentType = "application/json"
+Authorization_Basic= "YW5raXRhLnNpbmdoODQzQHdlYmt1bC5jb206ZzUyVDJnQm5ONm03ODMyOTQwYjZPNHY4Tng2NUQ2NjI="

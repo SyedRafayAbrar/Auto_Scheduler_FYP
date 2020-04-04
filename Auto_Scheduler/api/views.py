@@ -4,6 +4,8 @@ from Auto_Scheduler.Forms import ProfessorForm
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 from . import serializers
 from Auto_Scheduler.Forms import TimeForm
 from . import ResponseJSON
@@ -51,9 +53,8 @@ def add_Time(request):
 
 
 def login(request):
-    style = "hold - transition login - page"
-    # hold - transition login - page
-    return render(request, 'login.html', {'style': style})
+
+    return render(request, 'login.html')
 
 
 def home(request):
@@ -387,6 +388,20 @@ class SemesterView(APIView):
 
         return Response(ResponseJSON.Error_ResponseJSON("Something went wrong", False))
 
-# class DayView(viewsets.ModelViewSet):
-#     queryset = Days.objects.all()
-#     serializer_class = DaySerializer
+# class login(APIView):
+#
+
+class register(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        content = {
+
+            'user': unicode(request.user),  # `django.contrib.auth.User` instance.
+            'auth': unicode(request.auth),  # None
+        }
+        return Response(content)
+    # def post(self,request):
+    #     headers = request.headers
+    #     return Response(ResponseJSON.ResponseJSON(headers,True).getResponseJSON())

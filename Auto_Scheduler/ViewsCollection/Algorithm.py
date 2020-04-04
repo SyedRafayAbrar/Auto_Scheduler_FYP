@@ -341,7 +341,7 @@ def create_Time_Table(request):
         # ('module', 'course', 'selectedProfessor', 'assignedTime', 'assigned_room')
         for i in range(0,len(achivedPopulation),+1):
 
-            _serializers = serializers.Temp_Module_Serializer(data={'date_time': datetime.datetime.now()})
+            _serializers = serializers.Temp_Module_Serializer(data={'date_time': datetime.datetime.now(),'semester':selected_id})
             if _serializers.is_valid():
                 _serializers.save()
             else:
