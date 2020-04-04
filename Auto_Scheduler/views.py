@@ -256,7 +256,7 @@ def showTable(request):
     t_Module = Temp_Module.objects.all()
     for mod in t_Module:
         mods = Temp_Courses_Module.objects.filter(module=mod.id)
-        n_data = {'Module_id':mod.id,'Module_data':mods}
+        n_data = {'Module_id':mod.id,'Module_data':mods,'fitness':mod.fitness}
         data.append(n_data)
 
     return render(request,'showtimetable.html',{'data':data})
@@ -264,8 +264,9 @@ def showTable(request):
 def saveTimetable(request):
     if request.method == "POST":
         moduleID = request.POST.get('r1')
+        print(moduleID)
         tempModule = Temp_Module.objects.filter(id=moduleID).last()
-        _serializers = serializers.Module_Serializer(data={'date_time': datetime.datetime.now(),'semester':tempModule.semester.id})
+        _serializers = serializers.Module_Serializer(data={'date_time': datetime.datetime.now(),'semester':tempModule.semester.id,'fitness':tempModule.fitness})
         if _serializers.is_valid():
             _serializers.save()
         else:
@@ -290,8 +291,8 @@ def saveTimetable(request):
 
         if len(Courses_Module.objects.filter(module=current_mod.id))>0:
             # messages.success(request, 'Done')
-            temp = Temp_Module.objects.all().last()
-            temp.delete()
+            Temp_Courses_Module.objects.all().delete()
+            Temp_Module.objects.all().delete()
             return redirect('scheduler-home')
         else:
             messages.error(request, 'Please Invalid')

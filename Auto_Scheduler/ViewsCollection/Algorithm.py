@@ -11,7 +11,7 @@ from Auto_Scheduler.models import Rooms,Professors,Semester,Day_Time,Semester_Co
 import random
 from random import randint,randrange
 
-POPULATION_SIZE = 10
+POPULATION_SIZE = 100
 GENES = []
 ROOMS = []
 LABS = []
@@ -80,11 +80,13 @@ class Individual(object):
                     if self.chromosome[i]["Assigned-timeSlot"] == self.chromosome[ch]["Assigned-timeSlot"] and self.chromosome[ch]["roomAlotted"].room == self.chromosome[i]["roomAlotted"].room:        
                         ifFound = True
                         fitness += 1
+                        # print('teacher same')
                         countedIndex.append(ch)
                 
                     if self.chromosome[i]["Professor"].name == self.chromosome[ch]["Professor"].name:
                         if self.chromosome[i]["Assigned-timeSlot"] == self.chromosome[ch]["Assigned-timeSlot"]:        
                             fitness += 1
+                            # print('assignedTimeslot')
                             countedIndex.append(ch)
             
             if self.chromosome[i]["roomAlotted"].capacity < self.chromosome[i]["Capacity"]:
@@ -94,18 +96,19 @@ class Individual(object):
 
             if self.chromosome[i]["isLab"] == False:
                 if self.chromosome[i]["roomAlotted"].isLab == True:
-                    
+                    # print('room issue')
                     fitness += 1
 
             if self.chromosome[i]["isPhysics_Lab"] == False:
                 if self.chromosome[i]["roomAlotted"].isPhysicsLab == True:
-                    
+                    # print('teacher same')
                     fitness += 1
         
 
         for gene in range(0, len(self.chromosome), +1):
             localCount = 1
             for nextGene in range(0, len(self.chromosome), +1):
+
                 if gene != nextGene and nextGene not in alreadyCounted:
                     if self.chromosome[gene]["Professor"].name == self.chromosome[nextGene]["Professor"].name:
                         if self.chromosome[gene]["Assigned-timeSlot"] == self.chromosome[nextGene]["Assigned-timeSlot"]:
@@ -155,6 +158,8 @@ class Individual(object):
                     if rand != gene:
                         isFound = True
 
+
+
             
             if mutatedChromosome[gene]["isLab"] == False:
                 if mutatedChromosome[gene]["roomAlotted"].isLab == True:
@@ -165,15 +170,39 @@ class Individual(object):
                     mutatedChromosome[gene]["roomAlotted"] = random.choice(PhysicsLAB)
             if mutatedChromosome[gene]["isLab"] == True:
                 if mutatedChromosome[gene]["roomAlotted"].isLab == False:
-                    mutatedChromosome[gene]["roomAlotted"] = random.choice(LABS)        
+                    mutatedChromosome[gene]["roomAlotted"] = random.choice(LABS)
+
             if mutatedChromosome[gene]["roomAlotted"].capacity < mutatedChromosome[gene]["Capacity"]:
                 if mutatedChromosome[gene]["isLab"] == True:
                     mutatedChromosome[gene]["roomAlotted"] = random.choice(LABS)
+
+                elif mutatedChromosome[gene]["isPhysics_Lab"] == True:
+                    mutatedChromosome[gene]["roomAlotted"] = random.choice(PhysicsLAB)
+
                 else:
                     mutatedChromosome[gene]["roomAlotted"] = random.choice(ROOMS)
+
+        alreadyCounted = []
         
-        
-       
+        for gene in range(0, len(mutatedChromosome), +1):
+            localCount = 1
+
+            for nextGene in range(0, len(mutatedChromosome), +1):
+
+                if gene != nextGene and nextGene not in alreadyCounted:
+                    if mutatedChromosome[gene]["Professor"].name == mutatedChromosome[nextGene]["Professor"].name:
+                        if mutatedChromosome[gene]["Assigned-timeSlot"] == mutatedChromosome[nextGene]["Assigned-timeSlot"]:
+                            if mutatedChromosome[gene]["roomAlotted"].room == mutatedChromosome[nextGene]["roomAlotted"].room:
+                                if mutatedChromosome[gene]["isLab"] == True:
+                                    mutatedChromosome[gene]["roomAlotted"] = random.choice(LABS)
+
+                                elif mutatedChromosome[gene]["isPhysics_Lab"] == True:
+                                    mutatedChromosome[gene]["roomAlotted"] = random.choice(PhysicsLAB)
+
+                                else:
+                                    mutatedChromosome[gene]["roomAlotted"] = random.choice(ROOMS)
+                            alreadyCounted.append(gene)
+                            alreadyCounted.append(nextGene)
                         
         return mutatedChromosome
 
@@ -188,6 +217,7 @@ def create_Time_Table(request):
         global LABS
         global ROOMS
         selected_id = request.POST.get('r1')
+        achivedPopulation = []
         if selected_id == None:
             messages.error(request, "No Semester Selected")
             return redirect("scheduler-createtable")
@@ -238,7 +268,9 @@ def create_Time_Table(request):
             else:
                 ROOMS.append(r)
 
-
+        print(len(LABS))
+        print(len(PhysicsLAB))
+        print(len(ROOMS))
 
         for d_t in day_time:
             arrayofTime.append(d_t.day_time)
@@ -277,20 +309,28 @@ def create_Time_Table(request):
         for _ in range(POPULATION_SIZE):
             gnome = Individual.create_gnome()      
             population.append(Individual(gnome))
+            print('Fitness-----', Individual(gnome).fitness)
 
+        achivedPopulation.append(population[0])
         while not ifFound:
 
             population = sorted(population, key=lambda x: x.fitness)
-
+            print('Fitness After-----', population[0].fitness)
+            if achivedPopulation[0].fitness > population[0].fitness:
+                achivedPopulation.pop(0)
+                achivedPopulation.append(population[0])
             if population[0].fitness <= 0:
                 ifFound = True
+                print('Quit by 00 ')
                 break
             elif population[0].fitness == prevFitness:
                 fitness_Same_Count += 1
                 if fitness_Same_Count > 40:
                     ifFound = True
+                    print('Quit by 40 ')
                     break
             elif generation >= 100:
+                print('Quit by 100 ')
                 ifFound = True
                 break
             else:
@@ -299,49 +339,57 @@ def create_Time_Table(request):
 
             new_generation = []
             s = int((10 * POPULATION_SIZE) // 100)
+            # print('s is', s)
             for ch in range(0, s, +1):
-                ind = Individual(population[ch].mutation(population[ch].chromosome))
+                # ind = Individual(population[ch].mutation(population[ch].chromosome))
+                ind = Individual(population[ch].chromosome)
                 new_generation.append(ind)
 
             ns = int((90 * POPULATION_SIZE) // 100)
 
-            for _ in range(ns):
-                rand = randint(s, ns - 1)
-                parent1 = population[rand]
-                rand = randint(s, ns - 1)
-                parent2 = population[rand]
+            for ind in range(s,ns,+1):
+                # rand = randint(s, ns - 1)
+                parent1 = population[ind]
+                # rand = randint(s, ns - 1)
+                parent2 = population[ind]
 
                 child = parent1.crossover(parent2)
                 new_generation.append(child)
 
             population = new_generation
 
-
             generation += 1
 
         print('SELECTED GENERATION ')
         data = []
+        population = sorted(population, key=lambda x: x.fitness)
+        print(population[0].fitness)
         acheivedFitness = population[0].fitness
-        achivedPopulation = []
+
         count=0
-        if generation == 1:
+        # if population[0].fitness == 0:
+        if achivedPopulation[0].fitness > population[0].fitness:
             achivedPopulation.append(population[0])
-        else:
+        # else:
+        #
+        #     for pop in range(0,4,+1):
+        #         count+=1
+        #         if population[pop].fitness == acheivedFitness:
+        #             achivedPopulation.append(population[pop])
+        #         else:
+        #             break
+        #         if count>=3:
+        #             break
+        # print(count)
 
-            for pop in range(0,5,+1):
-                count+=1
-                if population[pop].fitness == acheivedFitness:
-                    achivedPopulation.append(population[pop])
-                else:
-                    break
-                if count>=4:
-                    break
 
+        Temp_Courses_Module.objects.all().delete()
+        Temp_Module.objects.all().delete()
 
         # ('module', 'course', 'selectedProfessor', 'assignedTime', 'assigned_room')
         for i in range(0,len(achivedPopulation),+1):
 
-            _serializers = serializers.Temp_Module_Serializer(data={'date_time': datetime.datetime.now(),'semester':selected_id})
+            _serializers = serializers.Temp_Module_Serializer(data={'date_time': datetime.datetime.now(),'semester':selected_id,'fitness':achivedPopulation[i].fitness})
             if _serializers.is_valid():
                 _serializers.save()
             else:

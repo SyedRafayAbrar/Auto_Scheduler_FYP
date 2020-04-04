@@ -107,6 +107,7 @@ class Module(models.Model):
     id = models.AutoField(primary_key=True)
     date_time = models.DateTimeField(default=None)
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE, default=None)
+    fitness = models.IntegerField(default=0)
 
     class Meta:
         db_table = "Module"
@@ -126,6 +127,7 @@ class Temp_Module(models.Model):
     id = models.AutoField(primary_key=True)
     date_time = models.DateTimeField(default=None)
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE, default=None)
+    fitness = models.IntegerField(default=0)
 
     class Meta:
         db_table = "Temp_Module"
