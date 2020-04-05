@@ -6,12 +6,18 @@ from Auto_Scheduler.models import Courses,Courses_Professor,Professors,Semester,
 
 def add_Professor(request):
     if request.method == "POST":
-
+        uID = 0
+        myuser = None
+        if request.session.has_key('user') == False:
+            return redirect("scheduler-login")
+        else:
+            myuser = request.session['user']
+            uID = myuser["id"]
         avail = request.POST.getlist('select_time')
         prof = request.POST.get('name')
         email = request.POST.get('email')
         permanant_switch = request.POST.get('permanant_switch')
-        if len(Day_Time.objects.all()) == 0:
+        if len(Day_Time.objects.all().filter(_user=uID)) == 0:
             messages.error(request, 'Please Add Day and Time First')
             return redirect("scheduler-professor")
 
@@ -23,9 +29,9 @@ def add_Professor(request):
         if permanant_switch:
             isPermanant = True
 
-        data = {"professor_name": prof, "professor_email": email, "isPermanant": isPermanant}
+        data = {"professor_name": prof, "professor_email": email, "isPermanant": isPermanant,'_user':uID}
 
-        response = process_Professor(data,isPermanant,avail)
+        response = process_Professor(data,isPermanant,avail,uID)
         if response["isError"]:
             messages.error(request, response["message"])
             return redirect("scheduler-showFile")
@@ -33,7 +39,8 @@ def add_Professor(request):
             messages.success(request, 'The Professor is added')
             return redirect("scheduler-showFile")
 
-def process_Professor(data,isPermanant,avail):
+def process_Professor(data,isPermanant,avail,uID):
+
     serializer = serializers.ProfessorSerializer(data=data)
     if serializer.is_valid():
         try:
@@ -48,10 +55,10 @@ def process_Professor(data,isPermanant,avail):
     if not isPermanant:
         for i in avail:
 
-            obj = Day_Time.objects.filter(day_time=i)
+            obj = Day_Time.objects.filter(day_time=i).filter(_user=uID)
             n_newData = {}
             for j in obj:
-                n_newData = {"prof": prof_obj.id, "day_time": j.id}
+                n_newData = {"prof": prof_obj.id, "day_time": j.id,'_user':uID}
 
             n_serializer = serializers.Day_Time_prof_Serializer(data=n_newData)
             if n_serializer.is_valid():
@@ -65,9 +72,9 @@ def process_Professor(data,isPermanant,avail):
                 return {"isError": True, "message": "Invalid Serialization"}
 
     else:
-        objects = Day_Time.objects.all()
+        objects = Day_Time.objects.all().filter(_user=uID)
         for obj in objects:
-            n_newData = {"prof": prof_obj.id, "day_time": obj.id}
+            n_newData = {"prof": prof_obj.id, "day_time": obj.id,'_user':uID}
             n_serializer = serializers.Day_Time_prof_Serializer(data=n_newData)
             if n_serializer.is_valid():
                 try:
@@ -80,7 +87,7 @@ def process_Professor(data,isPermanant,avail):
                 return {"isError": True, "message": 'The Professor is not added'}
 
 
-    if len(Day_Time_Professor.objects.filter(prof=prof_obj.id)) > 0:
+    if len(Day_Time_Professor.objects.filter(prof=prof_obj.id).filter(_user=uID)) > 0:
         return {"isError": False, "message": 'The Professor is added'}
     else:
         return {"isError": False, "message": 'The Professor is not added'}
@@ -91,8 +98,17 @@ def process_Professor(data,isPermanant,avail):
 
 def delete_Professor(request):
     if request.method == "POST":
+        uID = 0
+        myuser = None
+        if request.session.has_key('user') == False:
+            return redirect("scheduler-login")
+        else:
+            myuser = request.session['user']
+            uID = myuser["id"]
+
+
         prof_id = request.POST.get('delete_btn')
-        professorObj = Professors.objects.filter(id=prof_id).last()
+        professorObj = Professors.objects.filter(id=prof_id).filter(_user=uID).last()
         try:
             professorObj.delete()
             messages.success(request, 'The Professor is deleted')

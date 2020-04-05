@@ -109,7 +109,7 @@ class Semester_Courses(models.Model):
     semester = models.ForeignKey(Semester,on_delete=models.CASCADE,default=None)
     Course = models.ForeignKey(Courses,on_delete=models.CASCADE,default=None)
     selected_Professor = models.ForeignKey(Professors,on_delete=models.CASCADE,default=None)
-
+    _user = models.ForeignKey(Users, on_delete=models.CASCADE, default=1)
 
 
     class Meta:
@@ -132,7 +132,7 @@ class Courses_Module(models.Model):
     selectedProfessor = models.ForeignKey(Professors, on_delete=models.CASCADE, default=None)
     assignedTime = models.ForeignKey(Day_Time, on_delete=models.CASCADE, default=None)
     assigned_room = models.ForeignKey(Rooms, on_delete=models.CASCADE, default=None)
-
+    _user = models.ForeignKey(Users, on_delete=models.CASCADE, default=1)
 
     class Meta:
         db_table = "Courses_Module"
@@ -154,6 +154,7 @@ class Temp_Courses_Module(models.Model):
     selectedProfessor = models.ForeignKey(Professors, on_delete=models.CASCADE, default=None)
     assignedTime = models.ForeignKey(Day_Time, on_delete=models.CASCADE, default=None)
     assigned_room = models.ForeignKey(Rooms, on_delete=models.CASCADE, default=None)
+    _user = models.ForeignKey(Users, on_delete=models.CASCADE, default=1)
 
 
     class Meta:

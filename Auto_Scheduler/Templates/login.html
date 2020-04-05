@@ -75,7 +75,7 @@
       <!-- lockscreen credentials (contains the form) -->
       <form class="lockscreen-credentials" method="POST" action="/loginMethod">
         {% csrf_token %}
-         <input type="text" class="form-control" placeholder="username" name="username">
+         <input type="email" class="form-control" placeholder="email" name="username">
         <div class="input-group">
 
           <input type="password" class="form-control" placeholder="password" name="password">

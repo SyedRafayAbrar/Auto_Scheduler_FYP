@@ -6,6 +6,13 @@ from Auto_Scheduler.models import Rooms
 
 def addRoom(request):
     if request.method == "POST":
+        uID = 0
+        myuser = None
+        if request.session.has_key('user') == False:
+            return redirect("scheduler-login")
+        else:
+            myuser = request.session['user']
+            uID = myuser["id"]
 
         roomname = request.POST.get('room_name')
         room_capacity = request.POST.get('room_capacity')
@@ -19,7 +26,7 @@ def addRoom(request):
         if request.POST.get('lab_switch'):
             isLab = True
         newData = {"room_name": roomname, "room_capacity": room_capacity, "islab": isLab,
-                   "is_physics_lab": isPhysicsLab}
+                   "is_physics_lab": isPhysicsLab,'_user':uID}
         response = processRoom(newData)
         if response["isError"]:
             messages.error(request, response["message"])
@@ -42,8 +49,16 @@ def processRoom(newData):
 
 def delete_Room(request):
     if request.method == "POST":
+        uID = 0
+        myuser = None
+        if request.session.has_key('user') == False:
+            return redirect("scheduler-login")
+        else:
+            myuser = request.session['user']
+            uID = myuser["id"]
+
         room_id = request.POST.get('delete_btn')
-        roomObj = Rooms.objects.filter(id=room_id).last()
+        roomObj = Rooms.objects.filter(id=room_id).filter(_user=uID).last()
         try:
             roomObj.delete()
             messages.success(request, 'The Room is deleted')
