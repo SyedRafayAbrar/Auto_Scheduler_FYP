@@ -401,8 +401,8 @@ def create_Time_Table(request):
         # print(count)
 
 
-        Temp_Courses_Module.objects.all().delete()
-        Temp_Module.objects.all().delete()
+        Temp_Courses_Module.objects.filter(_user=uID).delete()
+        Temp_Module.objects.filter(_user=uID).delete()
 
         # ('module', 'course', 'selectedProfessor', 'assignedTime', 'assigned_room')
         for i in range(0,len(achivedPopulation),+1):

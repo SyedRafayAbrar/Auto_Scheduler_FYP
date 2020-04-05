@@ -395,8 +395,8 @@ def saveTimetable(request):
         else:
             messages.error(request, 'Invalid Temp'+tempModule.semester.id)
             return redirect('scheduler-home')
-        current_mod = Module.objects.all().last()
-        module = Temp_Courses_Module.objects.filter(module=moduleID)
+        current_mod = Module.objects.filter(_user=uID).last()
+        module = Temp_Courses_Module.objects.filter(module=moduleID).filter(_user=uID)
         for mod in module:
             n_data = {"module":current_mod.id,"course":mod.course.id, "selectedProfessor":mod.selectedProfessor.id, "assignedTime":mod.assignedTime.id,"assigned_room":mod.assigned_room.id,'_user':uID}
             new_serializers = serializers.Courses_Module_Serializer(data=n_data)
@@ -414,8 +414,8 @@ def saveTimetable(request):
 
         if len(Courses_Module.objects.filter(module=current_mod.id).filter(_user=uID))>0:
             # messages.success(request, 'Done')
-            Temp_Courses_Module.objects.all().delete()
-            Temp_Module.objects.all().delete()
+            Temp_Courses_Module.objects.filter(_user=uID).delete()
+            Temp_Module.objects.filter(_user=uID).delete()
             return redirect('scheduler-home')
         else:
             messages.error(request, 'Please Invalid')
