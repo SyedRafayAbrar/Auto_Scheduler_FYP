@@ -12,13 +12,14 @@ def selectFile(request):
     if request.session.has_key('user') == False:
         return redirect("scheduler-login")
     else:
+        myuser = request.session['user']
+        uID = myuser["id"]
         if len(Day_Time.objects.filter(_user=uID)) == 0:
             if len(Time.objects.filter(_user=uID)) == 0:
                 return redirect("scheduler-periods")
             elif len(Days.objects.filter(_user=uID)) == 0:
                 return redirect("scheduler-days")
-        myuser = request.session['user']
-        uID = myuser["id"]
+
 
     template = "ShowFile.html"
     if request.method == "GET":

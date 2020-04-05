@@ -13,6 +13,10 @@ def login(request):
 
     return render(request,"login.html")
 
+def viewProfile(request):
+
+    return render(request,"Profile.html")
+
 def register(request):
 
     return render(request,"register.html")
@@ -101,10 +105,10 @@ def course(request):
         uID = myuser["id"]
 
     profs = Professors.objects.filter(_user=uID)
-    courses = Courses.objects.all()
+    courses = Courses.objects.filter(_user=uID)
     data = []
     for course in courses:
-        c_p = Courses_Professor.objects.filter(course=course.id)
+        c_p = Courses_Professor.objects.filter(course=course.id).filter(_user=uID)
         professors = ""
         for c in c_p:
             _professor = c.prof
@@ -126,7 +130,7 @@ def createTable(request):
     semester_data = []
     semesters = Semester.objects.filter(_user=uID)
     for d in semesters:
-        courses = Semester_Courses.objects.filter(semester=d.id)
+        courses = Semester_Courses.objects.filter(semester=d.id).filter(_user=uID)
         newdata = {'semester_id': d.id, 'semester_name': d.name,
                     'courses': courses}
         semester_data.append(newdata)
@@ -154,7 +158,7 @@ def home(request):
     modules = Module.objects.filter(_user=uID)
     semsters = []
     for mod in modules:
-        courses = Courses_Module.objects.filter(module=mod.id)
+        courses = Courses_Module.objects.filter(module=mod.id).filter(_user=uID)
         semester = {'mod_id':mod.id,'semester':mod.semester,'date_time':mod.date_time,'courses':len(courses)}
         semsters.append(semester)
 
