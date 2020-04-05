@@ -220,6 +220,15 @@ class Individual(object):
 def create_Time_Table(request):
     if request.method == "POST":
 
+        uID = 0
+        myuser = None
+        if request.session.has_key('user') == False:
+            return redirect("scheduler-login")
+        else:
+            myuser = request.session['user']
+            uID = myuser["id"]
+
+
         global POPULATION_SIZE
         global arrayofTime
         global GENES
@@ -240,10 +249,10 @@ def create_Time_Table(request):
         isLabsAvailable = False
         isPhysics_LabsAvailable = False
 
-        currentSemester = Semester.objects.filter(id=selected_id).last()
+        currentSemester = Semester.objects.filter(id=selected_id).filter(_user=uID).last()
         roomCollection = []
-        rooms = Rooms.objects.all()
-        day_time = Day_Time.objects.all()
+        rooms = Rooms.objects.filter(_user=uID)
+        day_time = Day_Time.objects.filter(_user=uID)
 
         for room in rooms:
             p_lab = False
@@ -285,7 +294,7 @@ def create_Time_Table(request):
             arrayofTime.append(d_t.day_time)
 
         meetingsperweek = currentSemester.meetings_per_week
-        Courses = Semester_Courses.objects.filter(semester=currentSemester.id)
+        Courses = Semester_Courses.objects.filter(semester=currentSemester.id).filter(_user=uID)
 
 
         if len(LABS)<=0:
@@ -301,7 +310,7 @@ def create_Time_Table(request):
         for _ in range(0,meetingsperweek,+1):  # FOR SUMMER SEMESTER
             for course in Courses:
                 avail = []
-                availability = Day_Time_Professor.objects.filter(prof=course.selected_Professor.id)
+                availability = Day_Time_Professor.objects.filter(prof=course.selected_Professor.id).filter(_user=uID)
                 for a in availability:
                     avail.append(a.day_time.day_time)
                 
@@ -311,7 +320,7 @@ def create_Time_Table(request):
                 profe = Professor.Professor(_id,name,avail,"",0,[])
                 # messages.error(request, avail)
                 # return redirect("scheduler-createtable")
-                temp = {"course_id":course.Course.id,"Name": course.Course.course_name,"Professor":profe,"Capacity":course.Course.course_capacity,"Assigned-timeSlot": "", "Available_TimeSlots": [],"roomAlotted": None, "isLab": course.Course.course_isLab,"isPhysics_Lab":course.Course.course_isPhysics_Lab}
+                temp = {"course_id":course.Course.id,"Name": course.Course.course_name,"Professor":profe,"Capacity":course.Course.course_capacity,"Assigned-timeSlot": "", "Available_TimeSlots": [],"roomAlotted": None, "isLab": course.Course.course_isLab,"isPhysics_Lab":course.Course.course_isPhysics_Lab,'_user':uID}
                 COURSES.append(temp)
 
         GENES = COURSES
@@ -398,17 +407,17 @@ def create_Time_Table(request):
         # ('module', 'course', 'selectedProfessor', 'assignedTime', 'assigned_room')
         for i in range(0,len(achivedPopulation),+1):
 
-            _serializers = serializers.Temp_Module_Serializer(data={'date_time': datetime.datetime.now(),'semester':selected_id,'fitness':achivedPopulation[i].fitness})
+            _serializers = serializers.Temp_Module_Serializer(data={'date_time': datetime.datetime.now(),'semester':selected_id,'fitness':achivedPopulation[i].fitness,'_user':uID})
             if _serializers.is_valid():
                 _serializers.save()
             else:
                 messages.error(request, 'Invalid Temp')
                 return redirect('scheduler-home')
 
-            mod = Temp_Module.objects.all().last()
+            mod = Temp_Module.objects.filter(_user=uID).last()
             for ch in achivedPopulation[i].chromosome:
-                day_time = Day_Time.objects.filter(day_time=ch["Assigned-timeSlot"]).last()
-                n_data = {"module":mod.id,"course":ch["course_id"], "selectedProfessor":ch["Professor"].id, "assignedTime":day_time.id,"assigned_room":ch["roomAlotted"].id}
+                day_time = Day_Time.objects.filter(day_time=ch["Assigned-timeSlot"]).filter(_user=uID).last()
+                n_data = {"module":mod.id,"course":ch["course_id"], "selectedProfessor":ch["Professor"].id, "assignedTime":day_time.id,"assigned_room":ch["roomAlotted"].id,'_user':uID}
                 # messages.error(request, n_data)
                 # return redirect('scheduler-home')
                 new_serializers = serializers.Temp__Courses_Module_Serializer(data=n_data)
