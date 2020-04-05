@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from Auto_Scheduler.Forms import UserForm
 import csv, io
-from Auto_Scheduler.models import Professors,Courses,Rooms
+from Auto_Scheduler.models import Professors,Courses,Rooms,Day_Time,Time,Days
 import datetime
 from django.contrib import messages
 from Auto_Scheduler.ViewsCollection import  ProfessorView,RoomView,CourseView
@@ -12,6 +12,11 @@ def selectFile(request):
     if request.session.has_key('user') == False:
         return redirect("scheduler-login")
     else:
+        if len(Day_Time.objects.filter(_user=uID)) == 0:
+            if len(Time.objects.filter(_user=uID)) == 0:
+                return redirect("scheduler-periods")
+            elif len(Days.objects.filter(_user=uID)) == 0:
+                return redirect("scheduler-days")
         myuser = request.session['user']
         uID = myuser["id"]
 
