@@ -25,13 +25,42 @@ def logout(request):
     except:
       pass
 
+def register_Method(request):
+    if request.method == "POST":
+        name = request.POST.get('fullname')
+        email = request.POST.get('email')
+        passwrd = request.POST.get('password')
+
+        if name == None or passwrd == None or email == None:
+            messages.error(request, 'All fields required')
+            return redirect('scheduler-login')
+
+
+        data = {"uName":name,"password":passwrd,"email":email}
+        serializer = serializers.UserSerializer(data=data)
+        if serializer.is_valid():
+            try:
+                request.session['user'] = data
+                serializer.save()
+                return redirect('scheduler-home')
+            except:
+                messages.error(request, 'Unable to save user')
+                return redirect('scheduler-register')
+        else:
+            messages.error(request, 'Invalid data')
+            return redirect('scheduler-register')
 
 
 def loginMethod(request):
     if request.method == "POST":
         passwrd = request.POST.get('password')
-        if len(Users.objects.filter(uName="admin")) > 0:
-            u = Users.objects.filter(uName="admin").last()
+        name = request.POST.get('username')
+        if name == None or passwrd == None:
+            messages.error(request, 'All fields required')
+            return redirect('scheduler-login')
+
+        if len(Users.objects.filter(uName=name)) > 0:
+            u = Users.objects.filter(uName=name).last()
             if u.password == passwrd:
                 request.session['username'] = "admin"
                 return redirect("scheduler-home")
@@ -39,6 +68,7 @@ def loginMethod(request):
                 messages.error(request,'Incorrect Password')
                 return redirect("scheduler-login")
         else:
+            messages.error(request, 'User not found')
             return redirect("scheduler-login")
 
 def user(request):

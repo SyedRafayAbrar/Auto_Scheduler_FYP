@@ -27,6 +27,7 @@ urlpatterns = [
 
     path('logout', views.logout,name='scheduler-logout'),
     path('loginMethod', views.loginMethod,name='scheduler-loginMethod'),
+    path('registerMethod', views.register_Method,name='scheduler-registerMethod'),
     path('professor', views.professor,name='scheduler-professor'),
     path('periods', views.period,name='scheduler-periods'),
     path('room', views.room,name='scheduler-room'),
