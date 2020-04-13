@@ -59,6 +59,7 @@ def selectFile(request):
             isLab = True
         newData = {"room_name": splList[3], "room_capacity": 60, "islab": isLab,
                    "is_physics_lab": isPhysicsLab,'_user':uID}
+        print(newData)
         RoomView.processRoom(newData)
 
 

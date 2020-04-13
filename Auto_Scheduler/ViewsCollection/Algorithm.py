@@ -154,65 +154,77 @@ class Individual(object):
         rand = randint(0, len(mutatedChromosome)-1)
         secondGene = mutatedChromosome[rand]
 
-        temp = firstGene["Assigned-timeSlot"]
-        firstGene["Assigned-timeSlot"] = secondGene["Assigned-timeSlot"]
-        secondGene["Assigned-timeSlot"] = temp
 
-        for gene in range(0, len(mutatedChromosome), +1):
-            # if gene == rand:
-        #         mutatedChromosome[gene]["Assigned-timeSlot"] = random.choice(mutatedChromosome[gene]["Available_TimeSlots"])
-        #         isFound = False
-        #         while isFound:
-        #             rand = randrange(0,len(mutatedChromosome)+1,1)
-        #             if rand != gene:
-        #                 isFound = True
+        firstGene["Assigned-timeSlot"] = random.choice(firstGene["Available_TimeSlots"])
+        secondGene["Assigned-timeSlot"] = random.choice(secondGene["Available_TimeSlots"])
 
+        rand = randint(0, len(mutatedChromosome) - 1)
+        mutatedChromosome[rand]["roomAlotted"] = random.choice(ROOMS)
 
+        for c in range(0,2,+1):
+            rand = randint(0, len(mutatedChromosome) - 1)
+            if mutatedChromosome[rand]["roomAlotted"].isLab == True:
+                mutatedChromosome[rand]["roomAlotted"] = random.choice(LABS)
+            elif mutatedChromosome[rand]["roomAlotted"].isPhysicsLab == True:
+                mutatedChromosome[rand]["roomAlotted"] = random.choice(PhysicsLAB)
+            else:
+                mutatedChromosome[rand]["roomAlotted"] = random.choice(ROOMS)
 
-            
-            if mutatedChromosome[gene]["isLab"] == False:
-                if mutatedChromosome[gene]["roomAlotted"].isLab == True:
-                    mutatedChromosome[gene]["roomAlotted"] = random.choice(ROOMS)
-
-            if mutatedChromosome[gene]["isPhysics_Lab"] == True:
-                if mutatedChromosome[gene]["roomAlotted"].isPhysicsLab == False:
-                    mutatedChromosome[gene]["roomAlotted"] = random.choice(PhysicsLAB)
-            if mutatedChromosome[gene]["isLab"] == True:
-                if mutatedChromosome[gene]["roomAlotted"].isLab == False:
-                    mutatedChromosome[gene]["roomAlotted"] = random.choice(LABS)
-
-            if mutatedChromosome[gene]["roomAlotted"].capacity < mutatedChromosome[gene]["Capacity"]:
-                if mutatedChromosome[gene]["isLab"] == True:
-                    mutatedChromosome[gene]["roomAlotted"] = random.choice(LABS)
-
-                elif mutatedChromosome[gene]["isPhysics_Lab"] == True:
-                    mutatedChromosome[gene]["roomAlotted"] = random.choice(PhysicsLAB)
-
-                else:
-                    mutatedChromosome[gene]["roomAlotted"] = random.choice(ROOMS)
-
-        alreadyCounted = []
-        
-        for gene in range(0, len(mutatedChromosome), +1):
-            localCount = 1
-
-            for nextGene in range(0, len(mutatedChromosome), +1):
-
-                if gene != nextGene and nextGene not in alreadyCounted:
-                    if mutatedChromosome[gene]["Professor"].name == mutatedChromosome[nextGene]["Professor"].name:
-                        if mutatedChromosome[gene]["Assigned-timeSlot"] == mutatedChromosome[nextGene]["Assigned-timeSlot"]:
-                            if mutatedChromosome[gene]["roomAlotted"].room == mutatedChromosome[nextGene]["roomAlotted"].room:
-                                if mutatedChromosome[gene]["isLab"] == True:
-                                    mutatedChromosome[gene]["roomAlotted"] = random.choice(LABS)
-
-                                elif mutatedChromosome[gene]["isPhysics_Lab"] == True:
-                                    mutatedChromosome[gene]["roomAlotted"] = random.choice(PhysicsLAB)
-
-                                else:
-                                    mutatedChromosome[gene]["roomAlotted"] = random.choice(ROOMS)
-                            alreadyCounted.append(gene)
-                            alreadyCounted.append(nextGene)
-                        
+        # for gene in range(0, len(mutatedChromosome), +1):
+        #     # if gene == rand:
+        # #         mutatedChromosome[gene]["Assigned-timeSlot"] = random.choice(mutatedChromosome[gene]["Available_TimeSlots"])
+        # #         isFound = False
+        # #         while isFound:
+        # #             rand = randrange(0,len(mutatedChromosome)+1,1)
+        # #             if rand != gene:
+        # #                 isFound = True
+        #
+        #
+        #
+        #
+        #     if mutatedChromosome[gene]["isLab"] == False:
+        #         if mutatedChromosome[gene]["roomAlotted"].isLab == True:
+        #             mutatedChromosome[gene]["roomAlotted"] = random.choice(ROOMS)
+        #
+        #     if mutatedChromosome[gene]["isPhysics_Lab"] == True:
+        #         if mutatedChromosome[gene]["roomAlotted"].isPhysicsLab == False:
+        #             mutatedChromosome[gene]["roomAlotted"] = random.choice(PhysicsLAB)
+        #     if mutatedChromosome[gene]["isLab"] == True:
+        #         if mutatedChromosome[gene]["roomAlotted"].isLab == False:
+        #             mutatedChromosome[gene]["roomAlotted"] = random.choice(LABS)
+        #
+        #     if mutatedChromosome[gene]["roomAlotted"].capacity < mutatedChromosome[gene]["Capacity"]:
+        #         if mutatedChromosome[gene]["isLab"] == True:
+        #             mutatedChromosome[gene]["roomAlotted"] = random.choice(LABS)
+        #
+        #         elif mutatedChromosome[gene]["isPhysics_Lab"] == True:
+        #             mutatedChromosome[gene]["roomAlotted"] = random.choice(PhysicsLAB)
+        #
+        #         else:
+        #             mutatedChromosome[gene]["roomAlotted"] = random.choice(ROOMS)
+        #
+        # alreadyCounted = []
+        #
+        # for gene in range(0, len(mutatedChromosome), +1):
+        #     localCount = 1
+        #
+        #     for nextGene in range(0, len(mutatedChromosome), +1):
+        #
+        #         if gene != nextGene and nextGene not in alreadyCounted:
+        #             if mutatedChromosome[gene]["Professor"].name == mutatedChromosome[nextGene]["Professor"].name:
+        #                 if mutatedChromosome[gene]["Assigned-timeSlot"] == mutatedChromosome[nextGene]["Assigned-timeSlot"]:
+        #                     if mutatedChromosome[gene]["roomAlotted"].room == mutatedChromosome[nextGene]["roomAlotted"].room:
+        #                         if mutatedChromosome[gene]["isLab"] == True:
+        #                             mutatedChromosome[gene]["roomAlotted"] = random.choice(LABS)
+        #
+        #                         elif mutatedChromosome[gene]["isPhysics_Lab"] == True:
+        #                             mutatedChromosome[gene]["roomAlotted"] = random.choice(PhysicsLAB)
+        #
+        #                         else:
+        #                             mutatedChromosome[gene]["roomAlotted"] = random.choice(ROOMS)
+        #                     alreadyCounted.append(gene)
+        #                     alreadyCounted.append(nextGene)
+        #
         return mutatedChromosome
 
 
