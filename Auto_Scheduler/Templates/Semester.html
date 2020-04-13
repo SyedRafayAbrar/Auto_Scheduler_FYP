@@ -79,7 +79,7 @@
                       <th>ID</th>
                       <th>Semester Name</th>
                       <th>Number Of Courses</th>
-                      <th>Courses</th>
+<!--                      <th>Courses</th>-->
                     </tr>
                   </thead>
                   <tbody>
@@ -88,15 +88,15 @@
                       <td>{{semester.semester_id}}</td>
                       <td>{{semester.semester_name}}</td>
                       <td>{{semester.courses_count}}</td>
-                      <td>
+<!--                      <td>-->
 
-                            {%for d in data%}
-                      <tr>
-                          <td>{{d.str}}</td>
-                    </tr>
-                            {%endfor%}
+<!--                            {%for d in data%}-->
+<!--                      <tr>-->
+<!--                          <td>{{d.str}}</td>-->
+<!--                    </tr>-->
+<!--                            {%endfor%}-->
 
-                      </td>
+<!--                      </td>-->
                    <td>
                     <form method="post" action="del_Semester" >
                           {% csrf_token %}
