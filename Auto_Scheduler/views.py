@@ -282,13 +282,17 @@ def addDay(request):
         if dayname == "":
             messages.error(request, 'Name Cannot be empty')
             return redirect('scheduler-days')
+
         data = {'day_name':dayname,'_user':uID}
         serializer = serializers.DaySerializer(data=data)
         if serializer.is_valid():
+
             check_day = Days.objects.filter(day_name= request.POST.get('day_name')).filter(_user=uID)
+
             if len(check_day) > 0:
                 messages.error(request,'Already there')
                 return redirect('scheduler-days')
+
 
             time = Time.objects.filter(_user=uID)
             if len(time) > 0:
@@ -341,7 +345,9 @@ def add_Time(request):
     if request.method == "POST":
         start_time = request.POST.get('start_time')
         end_time = request.POST.get('end_time')
+
         newData = {"start_time": start_time, "end_time": end_time,"_user":uID}
+
         check = Time.objects.filter(start_time=start_time).filter(end_time=end_time).filter(_user=uID)
         if len(check) > 0:
             return redirect("scheduler-home")

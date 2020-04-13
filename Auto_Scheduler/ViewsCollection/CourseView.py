@@ -42,7 +42,7 @@ def processCourse(data,profs,uID):
     else:
         print('error in serial2')
         return {"isError": True, "message": 'Error in Course Serialization'}
-    courseObj = Courses.objects.all().filter(_user=uID).last()
+    courseObj = Courses.objects.filter(_user=uID).last()
 
     for professor in profs:
         obj = Professors.objects.filter(professor_name=professor).filter(_user=uID)

@@ -17,7 +17,8 @@ def add_Professor(request):
         prof = request.POST.get('name')
         email = request.POST.get('email')
         permanant_switch = request.POST.get('permanant_switch')
-        if len(Day_Time.objects.all().filter(_user=uID)) == 0:
+
+        if len(Day_Time.objects.filter(_user=uID)) == 0:
             messages.error(request, 'Please Add Day and Time First')
             return redirect("scheduler-professor")
 
@@ -51,7 +52,7 @@ def process_Professor(data,isPermanant,avail,uID):
     else:
         return {"isError": True, "message": 'The Professor is cannot be added'}
 
-    prof_obj = Professors.objects.all().last()
+    prof_obj = Professors.objects.filter(_user=uID).last()
     if not isPermanant:
         for i in avail:
 
@@ -72,7 +73,7 @@ def process_Professor(data,isPermanant,avail,uID):
                 return {"isError": True, "message": "Invalid Serialization"}
 
     else:
-        objects = Day_Time.objects.all().filter(_user=uID)
+        objects = Day_Time.objects.filter(_user=uID)
         for obj in objects:
             n_newData = {"prof": prof_obj.id, "day_time": obj.id,'_user':uID}
             n_serializer = serializers.Day_Time_prof_Serializer(data=n_newData)
