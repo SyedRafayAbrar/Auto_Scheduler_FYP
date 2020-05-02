@@ -140,9 +140,15 @@ class Individual(object):
         for j in range(num - 1, len(p2.chromosome), +1):
 
             child.append(self.chromosome[j])
-        newchild = self.mutation(child)
 
-        return Individual(newchild)
+        c = Individual(child)
+        if c.fitness > 0:
+            newchild = self.mutation(child)
+            return Individual(newchild)
+        else:
+            return Individual(c)
+
+
 
     def mutation(self, chromosome):
         mutatedChromosome = chromosome
