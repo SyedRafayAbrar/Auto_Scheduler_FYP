@@ -51,7 +51,7 @@ def selectFile(request):
         splList = room.split(" ")
         isLab = False
         isPhysicsLab = False
-        if len(Rooms.objects.filter(room_name=splList[3])) > 0:
+        if len(Rooms.objects.filter(room_name=splList[3]).filter(_user=uID)) > 0:
             continue
         if "SR" in splList[3]:
             isPhysicsLab = True
