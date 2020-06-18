@@ -189,7 +189,13 @@ def semester(request):
     return render(request, 'Semester.html', {'Semesters': semester_data,"data":courses_data})
 
 def showFile(request):
-
+    uID = 0
+    myuser = None
+    if request.session.has_key('user') == False:
+        return redirect("scheduler-login")
+    else:
+        myuser = request.session['user']
+        uID = myuser["id"]
     return render(request,'ShowFile.html')
 
 
