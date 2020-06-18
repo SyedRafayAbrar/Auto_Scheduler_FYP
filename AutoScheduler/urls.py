@@ -62,6 +62,7 @@ urlpatterns = [
 
     path('timetable', TimeTable_View.TimeTableView, name='scheduler-timetableview'),
     path('view_timetable', TimeTable_View.ViewTimeTable, name='scheduler-viewtimetableview'),
-
+# deletePeriod
+    path('del_Period',views.deletePeriod,name='scheduler-deletePeriod'),
 
 ]

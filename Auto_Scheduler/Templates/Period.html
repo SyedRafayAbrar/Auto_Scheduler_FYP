@@ -89,6 +89,7 @@
                       <th>ID</th>
                       <th>Start Time</th>
                       <th>End Time</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -97,6 +98,13 @@
                       <td>{{time.id}}</td>
                       <td>{{time.start_time}}</td>
                       <td>{{time.end_time}}</td>
+                      <td>
+                         <form method="post" action="del_Period" >
+                          {% csrf_token %}
+                          <input type="hidden" class="form-control" placeholder="" name="delete_btn" value="{{time.id}}">
+                          <button type="submit" class="btn btn-danger" name="">Delete</button>
+                        </form>
+                      </td>
                     </tr>
                   {%endfor%}
 

@@ -237,6 +237,26 @@ def period(request):
     # return render(request, 'blog/about.html', {'title': title})
     return render(request, 'Period.html',{'data':time})
 
+def deletePeriod(request):
+    if request.method == "POST":
+        uID = 0
+        myuser = None
+        if request.session.has_key('user') == False:
+            return redirect("scheduler-login")
+        else:
+            myuser = request.session['user']
+            uID = myuser["id"]
+
+
+        period_id = request.POST.get('delete_btn')
+        periodObj = Time.objects.filter(id=period_id).filter(_user=uID).last()
+        try:
+            periodObj.delete()
+            messages.success(request, 'The period is deleted')
+            return redirect("scheduler-periods")
+        except:
+            messages.error(request, 'Period Cant be Delete')
+            return redirect("scheduler-periods")
 
 def room(request):
     uID = 0
