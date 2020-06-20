@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from Auto_Scheduler.Forms import UserForm
 import csv, io
-from Auto_Scheduler.api import serializers
+
 import datetime
 from django.contrib import messages
 from .models import  Users,Languages, Time,Days,Day_Time,Rooms,Professors,Courses,Day_Time_Professor,Courses_Professor,Semester,Semester_Courses,Temp_Module,Temp_Courses_Module,Module,Courses_Module
-
+from Auto_Scheduler.api import serializers
 from Auto_Scheduler.models import Users
 
 # Create your views here.
