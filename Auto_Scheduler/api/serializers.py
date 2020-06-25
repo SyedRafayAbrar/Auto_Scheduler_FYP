@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from  Auto_Scheduler.models import Users,Languages,Time,Days,Day_Time,Rooms,Day_Time_Professor,Professors,Courses,Courses_Professor,Semester,Semester_Courses,Temp_Module,Temp_Courses_Module,Module,Courses_Module
+from  Auto_Scheduler.models import Users,Languages,Time,Days,Day_Time,Rooms,Day_Time_Professor,Professors,Courses,Courses_Professor,Semester,Semester_Courses,Temp_Module,Temp_Courses_Module,Module,Courses_Module,IpAddresses
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -86,3 +86,8 @@ class Courses_Module_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Courses_Module
         fields = ('module', 'course', 'selectedProfessor','assignedTime','assigned_room','_user')
+
+class IpAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IpAddresses
+        fields = "__all__"

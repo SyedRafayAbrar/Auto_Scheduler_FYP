@@ -159,3 +159,10 @@ class Temp_Courses_Module(models.Model):
 
     class Meta:
         db_table = "Temp_Courses_Module"
+
+class IpAddresses(models.Model):
+    id = models.AutoField(primary_key=True)
+    ip_address = models.CharField(max_length=100, default=None)
+
+    class Meta:
+        db_table = "IpAddresses"

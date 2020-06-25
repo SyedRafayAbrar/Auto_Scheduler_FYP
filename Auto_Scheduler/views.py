@@ -5,7 +5,7 @@ import csv, io
 import datetime
 from ipware import get_client_ip
 from django.contrib import messages
-from .models import  Users,Languages, Time,Days,Day_Time,Rooms,Professors,Courses,Day_Time_Professor,Courses_Professor,Semester,Semester_Courses,Temp_Module,Temp_Courses_Module,Module,Courses_Module
+from .models import  Users,Languages,IpAddresses, Time,Days,Day_Time,Rooms,Professors,Courses,Day_Time_Professor,Courses_Professor,Semester,Semester_Courses,Temp_Module,Temp_Courses_Module,Module,Courses_Module
 from Auto_Scheduler.api import serializers
 from Auto_Scheduler.models import Users
 
@@ -17,13 +17,11 @@ def login(request):
     # Unable to get the client's IP address
         print("No ip")
     else:
-        # We got the client's IP address
-        if is_routable:
-        # The client's IP address is publicly routable on the Internet
-            print("publicly routable")
-        else:
-            print("private")
-    # The client's IP address is private
+        data = IpAddresses.objects.filter(ip_address=ip)
+        if len(data) == 0:
+            serializer = serializers.IpAddressSerializer(data={"ip_address":ip})
+            if serializer.is_valid():
+                serializer.save()
 
     print(ip)
     return render(request,"login.html")
