@@ -3,6 +3,7 @@ from Auto_Scheduler.Forms import UserForm
 import csv, io
 
 import datetime
+from ipware import get_client_ip
 from django.contrib import messages
 from .models import  Users,Languages, Time,Days,Day_Time,Rooms,Professors,Courses,Day_Time_Professor,Courses_Professor,Semester,Semester_Courses,Temp_Module,Temp_Courses_Module,Module,Courses_Module
 from Auto_Scheduler.api import serializers
@@ -11,6 +12,20 @@ from Auto_Scheduler.models import Users
 # Create your views here.
 def login(request):
 
+    ip, is_routable = get_client_ip(request)
+    if ip is None:
+    # Unable to get the client's IP address
+        print("No ip")
+    else:
+        # We got the client's IP address
+        if is_routable:
+        # The client's IP address is publicly routable on the Internet
+            print("publicly routable")
+        else:
+            print("private")
+    # The client's IP address is private
+
+    print(ip)
     return render(request,"login.html")
 
 def viewProfile(request):
@@ -452,3 +467,16 @@ def saveTimetable(request):
         else:
             messages.error(request, 'Please Invalid')
             return redirect('scheduler-showtable')
+
+# def get_client_ip(request):
+#     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+#     if x_forwarded_for:
+#         print("returning FORWARDED_FOR")
+#         ip = x_forwarded_for.split(',')[-1].strip()
+#     elif request.META.get('HTTP_X_REAL_IP'):
+#         print("returning REAL_IP")
+#         ip = request.META.get('HTTP_X_REAL_IP')
+#     else:
+#         print("returning REMOTE_ADDR")
+#         ip = request.META.get('REMOTE_ADDR')
+#     return ip
