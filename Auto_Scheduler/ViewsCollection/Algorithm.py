@@ -125,28 +125,35 @@ class Individual(object):
     def crossover(self, p2):
         child = []
         isOdd = False
+        randNum = randint(0,len(p2.chromosome))
         num = len(p2.chromosome) // 2
 
-        if num % 2 != 0:
-            num = len(p2.chromosome) - 1 // 2
-            isOdd = True
-
-        randomNum = randint(0, num)
-        sub = len(p2.chromosome) - randomNum
-
-        for i in range(0, num - 1, +1):
-
-            child.append(p2.chromosome[i])
-        for j in range(num - 1, len(p2.chromosome), +1):
-
-            child.append(self.chromosome[j])
+        if randNum % 2 == 0:
+            child = p2.chromosome[num:] + self.chromosome[:num]
+        else:
+            child = p2.chromosome[:num] + self.chromosome[num:]
+        # if num % 2 != 0:
+        #     num = len(p2.chromosome) - 1 // 2
+        #     isOdd = True
+        #
+        # randomNum = randint(0, num)
+        # sub = len(p2.chromosome) - randomNum
+        #
+        # for i in range(0, num - 1, +1):
+        #
+        #     child.append(p2.chromosome[i])
+        # for j in range(num - 1, len(p2.chromosome), +1):
+        #
+        #     child.append(self.chromosome[j])
 
         c = Individual(child)
-        if c.fitness > 0:
-            newchild = self.mutation(child)
-            return Individual(newchild)
-        else:
-            return Individual(c)
+        # print(len(child))
+        return c
+        # if c.fitness > 0:
+        #     newchild = self.mutation(child)
+        #     return Individual(newchild)
+        # else:
+        #     return Individual(c)
 
 
 
@@ -156,25 +163,26 @@ class Individual(object):
         global ROOMS,LABS,physicsLab
         # rand = randrange(0,len(mutatedChromosome)+1,1)
         rand = randint(0, len(mutatedChromosome)-1)
-        firstGene = mutatedChromosome[rand]
+        mutatedChromosome[rand]["Assigned-timeSlot"] = random.choice(mutatedChromosome[rand]["Available_TimeSlots"])
         rand = randint(0, len(mutatedChromosome)-1)
-        secondGene = mutatedChromosome[rand]
+        mutatedChromosome[rand]["Assigned-timeSlot"] = random.choice(mutatedChromosome[rand]["Available_TimeSlots"])
 
 
-        firstGene["Assigned-timeSlot"] = random.choice(firstGene["Available_TimeSlots"])
-        secondGene["Assigned-timeSlot"] = random.choice(secondGene["Available_TimeSlots"])
 
-        rand = randint(0, len(mutatedChromosome) - 1)
-        mutatedChromosome[rand]["roomAlotted"] = random.choice(ROOMS)
+        # firstGene["Assigned-timeSlot"] = random.choice(firstGene["Available_TimeSlots"])
+        # secondGene["Assigned-timeSlot"] = random.choice(secondGene["Available_TimeSlots"])
 
-        for c in range(0,2,+1):
-            rand = randint(0, len(mutatedChromosome) - 1)
-            if mutatedChromosome[rand]["roomAlotted"].isLab == True:
-                mutatedChromosome[rand]["roomAlotted"] = random.choice(LABS)
-            elif mutatedChromosome[rand]["roomAlotted"].isPhysicsLab == True:
-                mutatedChromosome[rand]["roomAlotted"] = random.choice(PhysicsLAB)
-            else:
-                mutatedChromosome[rand]["roomAlotted"] = random.choice(ROOMS)
+        # rand = randint(0, len(mutatedChromosome) - 1)
+        # mutatedChromosome[rand]["roomAlotted"] = random.choice(ROOMS)
+
+        # for c in range(0,2,+1):
+        #     rand = randint(0, len(mutatedChromosome) - 1)
+        #     if mutatedChromosome[rand]["roomAlotted"].isLab == True:
+        #         mutatedChromosome[rand]["roomAlotted"] = random.choice(LABS)
+        #     elif mutatedChromosome[rand]["roomAlotted"].isPhysicsLab == True:
+        #         mutatedChromosome[rand]["roomAlotted"] = random.choice(PhysicsLAB)
+        #     else:
+        #         mutatedChromosome[rand]["roomAlotted"] = random.choice(ROOMS)
 
         # for gene in range(0, len(mutatedChromosome), +1):
         #     # if gene == rand:
@@ -254,6 +262,7 @@ def create_Time_Table(request):
         global ROOMS
         selected_id = request.POST.get('r1')
         achivedPopulation = []
+        selectedFitness = 1
         if selected_id == None:
             messages.error(request, "No Semester Selected")
             return redirect("scheduler-createtable")
@@ -331,7 +340,7 @@ def create_Time_Table(request):
                 availability = Day_Time_Professor.objects.filter(prof=course.selected_Professor.id).filter(_user=uID)
                 for a in availability:
                     avail.append(a.day_time.day_time)
-                
+
                 _id = course.selected_Professor.id
                 name = course.selected_Professor.professor_name
 
@@ -346,15 +355,20 @@ def create_Time_Table(request):
             gnome = Individual.create_gnome()      
             population.append(Individual(gnome))
             print('Fitness-----', Individual(gnome).fitness)
-
+        selectedFitness = population[0].fitness
         achivedPopulation.append(population[0])
         while not ifFound:
 
             population = sorted(population, key=lambda x: x.fitness)
             print('Fitness After-----', population[0].fitness)
-            if achivedPopulation[0].fitness > population[0].fitness:
+            # population[0]
+            if population[0].fitness < selectedFitness:
+                selectedFitness = population[0].fitness
                 achivedPopulation.pop(0)
                 achivedPopulation.append(population[0])
+            # if achivedPopulation[0].fitness > population[0].fitness:
+            #     achivedPopulation.pop(0)
+            #     achivedPopulation.append(population[0])
             if population[0].fitness <= 0:
                 ifFound = True
                 print('Quit by 00 ')
@@ -377,17 +391,17 @@ def create_Time_Table(request):
             s = int((10 * POPULATION_SIZE) // 100)
             # print('s is', s)
             for ch in range(0, s, +1):
-                # ind = Individual(population[ch].mutation(population[ch].chromosome))
-                ind = Individual(population[ch].chromosome)
+                ind = Individual(population[ch].mutation(population[ch].chromosome))
+                # ind = Individual(population[ch].chromosome)
                 new_generation.append(ind)
 
             ns = int((90 * POPULATION_SIZE) // 100)
 
-            for ind in range(s,ns,+1):
+            for ind in range(ns):
                 # rand = randint(s, ns - 1)
-                parent1 = population[ind]
+                parent1 = random.choice(population[:50])
                 # rand = randint(s, ns - 1)
-                parent2 = population[ind]
+                parent2 = random.choice(population[:50])
 
                 child = parent1.crossover(parent2)
                 new_generation.append(child)
@@ -399,13 +413,13 @@ def create_Time_Table(request):
         print('SELECTED GENERATION ')
         data = []
         population = sorted(population, key=lambda x: x.fitness)
-        print(population[0].fitness)
-        acheivedFitness = population[0].fitness
+        print(selectedFitness)
+        acheivedFitness = selectedFitness
 
         count=0
         # if population[0].fitness == 0:
-        if achivedPopulation[0].fitness > population[0].fitness:
-            achivedPopulation.append(population[0])
+        # if achivedPopulation[0].fitness > population[0].fitness:
+        #     achivedPopulation.append(population[0])
         # else:
         #
         #     for pop in range(0,4,+1):
@@ -459,7 +473,24 @@ def create_Time_Table(request):
 
 
 
+def makeCourse_Dict(course,uID):
+    avail = []
+    availability = Day_Time_Professor.objects.filter(prof=course.selected_Professor.id).filter(_user=uID)
+    for a in availability:
+        avail.append(a.day_time.day_time)
 
+    _id = course.selected_Professor.id
+    name = course.selected_Professor.professor_name
+
+    profe = Professor.Professor(_id, name, avail, "", 0, [])
+    # messages.error(request, avail)
+    # return redirect("scheduler-createtable")
+    temp = {"course_id": course.Course.id, "Name": course.Course.course_name, "Professor": profe,
+            "Capacity": course.Course.course_capacity, "Assigned-timeSlot": "", "Available_TimeSlots": [],
+            "roomAlotted": None, "isLab": course.Course.course_isLab,
+            "isPhysics_Lab": course.Course.course_isPhysics_Lab, '_user': uID}
+
+    return temp
 
 #
 # class Create_Time_Table_API(APIView):
