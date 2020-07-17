@@ -22,7 +22,7 @@ def add_Professor(request):
             messages.error(request, 'Please Add Day and Time First')
             return redirect("scheduler-professor")
 
-        if len(Professors.objects.filter(professor_name=prof)) > 0:
+        if len(Professors.objects.filter(professor_name=prof).filter(_user=uID)) > 0:
             messages.error(request, 'Professor exist')
             return redirect("scheduler-professor")
 
