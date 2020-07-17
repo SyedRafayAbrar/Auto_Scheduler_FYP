@@ -470,6 +470,11 @@ def saveTimetable(request):
 
     if request.method == "POST":
         moduleID = request.POST.get('r1')
+        if moduleID == None:
+            messages.error(request, 'Please select a table.')
+            return redirect('scheduler-showtable')
+
+
         print(moduleID)
         tempModule = Temp_Module.objects.filter(id=moduleID).filter(_user=uID).last()
         _serializers = serializers.Module_Serializer(data={'date_time': datetime.datetime.now(),'semester':tempModule.semester.id,'fitness':tempModule.fitness,'_user':uID})
@@ -477,7 +482,7 @@ def saveTimetable(request):
             _serializers.save()
         else:
             messages.error(request, 'Invalid Temp'+tempModule.semester.id)
-            return redirect('scheduler-home')
+            return redirect('scheduler-showtable')
         current_mod = Module.objects.filter(_user=uID).last()
         module = Temp_Courses_Module.objects.filter(module=moduleID).filter(_user=uID)
         for mod in module:

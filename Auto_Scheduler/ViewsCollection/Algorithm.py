@@ -164,9 +164,11 @@ class Individual(object):
         # rand = randrange(0,len(mutatedChromosome)+1,1)
         rand = randint(0, len(mutatedChromosome)-1)
         mutatedChromosome[rand]["Assigned-timeSlot"] = random.choice(mutatedChromosome[rand]["Available_TimeSlots"])
+        # print(len(mutatedChromosome[rand]["Available_TimeSlots"]))
+
         rand = randint(0, len(mutatedChromosome)-1)
         mutatedChromosome[rand]["Assigned-timeSlot"] = random.choice(mutatedChromosome[rand]["Available_TimeSlots"])
-
+        # print(len(mutatedChromosome[rand]["Available_TimeSlots"]))
 
 
         # firstGene["Assigned-timeSlot"] = random.choice(firstGene["Available_TimeSlots"])
