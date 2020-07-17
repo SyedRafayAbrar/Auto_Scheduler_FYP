@@ -35,10 +35,10 @@ def add_Professor(request):
         response = process_Professor(data,isPermanant,avail,uID)
         if response["isError"]:
             messages.error(request, response["message"])
-            return redirect("scheduler-showFile")
+            return redirect("scheduler-professor")
         else:
             messages.success(request, 'The Professor is added')
-            return redirect("scheduler-showFile")
+            return redirect("scheduler-professor")
 
 def process_Professor(data,isPermanant,avail,uID):
 
