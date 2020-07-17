@@ -342,23 +342,13 @@ def addDay(request):
                     messages.error(request,'Error adding Day')
                     return redirect('scheduler-days')
 
-                days = Days.objects.filter(_user=uID)
-                for day in days:
-                    for t in time:
-                        # concat_str = day.day_name+"-"+Time.objects.get(pk=t).values('start_time')+"-"+Time.objects.get(pk=t).values('end_time')
-
-                        concat_str = day.day_name + "-" + t.start_time + "-" + t.end_time
-                        check_day_time = Day_Time.objects.filter(day_time=concat_str).filter(_user=uID)
-                        if len(check_day_time)==0:
-                            newData = {"time":t.id,"day":day.id,"day_time":concat_str,"_user":uID}
-                            serializer = serializers.Time_DaySerializer(data=newData)
-                            if serializer.is_valid():
-                                try:
-                                    serializer.save()
-                                except:
-                                    messages.error(request,'Error in Loop')
-                                    return redirect('scheduler-days')
-
+                response = refreshDate_Time(uID)
+                if response["isError"]:
+                    messages.error(request, response["message"])
+                    return redirect("scheduler-days")
+                else:
+                    messages.success(request, 'Day added Successfully')
+                    return redirect("scheduler-days")
                 messages.success(request,'Day added Successfully')
                 return redirect('scheduler-days')
 
@@ -369,8 +359,31 @@ def addDay(request):
 
 
         else:
-            return Response({'message': 'Wrong Format'})
+            messages.error(request, 'Invalid Serializer')
+            return redirect('scheduler-days')
 
+def refreshDate_Time(uID):
+
+
+    days = Days.objects.filter(_user=uID)
+
+    time = Time.objects.filter(_user=uID)
+    for day in days:
+        for t in time:
+            # concat_str = day.day_name+"-"+Time.objects.get(pk=t).values('start_time')+"-"+Time.objects.get(pk=t).values('end_time')
+
+            concat_str = day.day_name + "-" + t.start_time + "-" + t.end_time
+            check_day_time = Day_Time.objects.filter(day_time=concat_str).filter(_user=uID)
+            if len(check_day_time) == 0:
+                newData = {"time": t.id, "day": day.id, "day_time": concat_str, "_user": uID}
+                serializer = serializers.Time_DaySerializer(data=newData)
+                if serializer.is_valid():
+                    try:
+                        serializer.save()
+                    except:
+                        return {"isError": True, "message": "Invalid Serialization"}
+
+    return {"isError": False, "message": "Done"}
 
 def add_Time(request):
     uID = 0
@@ -385,6 +398,24 @@ def add_Time(request):
         start_time = request.POST.get('start_time')
         end_time = request.POST.get('end_time')
 
+        # set the date and time format
+        date_format = "%H:%M %p"
+
+        # convert string to actual date and time
+
+        time1 = datetime.datetime.strptime(start_time, date_format)
+        time2 = datetime.datetime.strptime(end_time, date_format)
+
+        # find the difference between two dates
+        diff = time2 - time1
+
+        hours = (diff.seconds) / 3600
+        print(str(hours) + ' Hours')
+        if hours < 1:
+            messages.error(request, "There must be 1 hour difference between times")
+            return redirect("scheduler-periods")
+
+
         newData = {"start_time": start_time, "end_time": end_time,"_user":uID}
 
         check = Time.objects.filter(start_time=start_time).filter(end_time=end_time).filter(_user=uID)
@@ -395,6 +426,13 @@ def add_Time(request):
                 serializer = serializers.TimeSerializer(data=newData)
                 if serializer.is_valid():
                     serializer.save()
+                    response = refreshDate_Time(uID)
+                    if response["isError"]:
+                        messages.error(request, response["message"])
+                        return redirect("scheduler-periods")
+                    else:
+                        messages.success(request, 'Time added Successfully')
+                        return redirect("scheduler-periods")
                     return redirect("scheduler-periods")
                 else:
                     return redirect("scheduler-periods")
